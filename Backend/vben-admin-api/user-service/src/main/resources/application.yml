@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: user-service   # 服务名（注册到 Nacos 的名字）
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/vbenadmin?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+dubbo:
+  application:
+    name: user-service
+  registry:
+    address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
+  protocol:
+    name: dubbo
+    port: -1
+
+server:
+  port: 8083

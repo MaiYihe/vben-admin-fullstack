@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: auth-service   # 服务名（注册到 Nacos 的名字）
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+
+dubbo:
+#  dubbo 的 consumer 不注册到 nacos 里面，没必要写 application.name
+#  application:
+#    name: auth-service
+  registry:
+    address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
+# 不写 protocal，因为加了 protocalConfig Bean 的是属于 provicer—
+# auth-service 暂时不作为 provider
+#  protocol:
+#    name: dubbo
+#    port: -1
+
+server:
+  port: 8082
