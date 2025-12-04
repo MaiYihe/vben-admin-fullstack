@@ -1,7 +1,7 @@
-package com.vbenadmin.backend.vbenadmingateway.filter;
+package com.vbenadmin.backend.gateway.filter;
 
 import com.vbenadmin.backend.commoncore.utils.JWTUtils;
-import com.vbenadmin.backend.vbenadmingateway.config.IgnoreUrlsConfig;
+import com.vbenadmin.backend.gateway.config.IgnoreUrlsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

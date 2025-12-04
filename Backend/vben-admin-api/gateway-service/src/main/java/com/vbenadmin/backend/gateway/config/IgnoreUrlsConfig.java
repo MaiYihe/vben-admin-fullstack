@@ -1,4 +1,4 @@
-package com.vbenadmin.backend.vbenadmingateway.config;
+package com.vbenadmin.backend.gateway.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
