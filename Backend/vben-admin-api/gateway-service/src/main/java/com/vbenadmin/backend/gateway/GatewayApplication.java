@@ -1,4 +1,4 @@
-package com.vbenadmin.backend.vbenadmingateway;
+package com.vbenadmin.backend.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
