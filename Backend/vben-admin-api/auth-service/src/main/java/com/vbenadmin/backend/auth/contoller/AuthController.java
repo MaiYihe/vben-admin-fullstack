@@ -57,6 +57,7 @@ public class AuthController {
 
     /**
      * 刷新 accessToken
+     * 
      * @return String accessToken
      */
     @PostMapping("/refresh")
@@ -100,8 +101,10 @@ public class AuthController {
         cookie.setMaxAge(tokenPair.getRefreshExipre().intValue()); // 告诉浏览器何时自动删除 refreshToken Cookie
         response.addCookie(cookie);
 
-        // 单独追加 SameSite 属性
-        String cookieValue = String.format("refreshToken=%s; HttpOnly; Secure; Path=/; Max-Age=%d; SameSite=Lax",
+        // 单独追加 SameSite 属性（None 的时候允许跨域访问）
+        String cookieValue = String.format(
+                "refreshToken=%s; HttpOnly; Secure; Path=/; SameSite=None; Max-Age=%d",
+                tokenPair.getRefreshToken(),
                 tokenPair.getRefreshExipre().intValue());
 
         response.setHeader("Set-Cookie", cookieValue);

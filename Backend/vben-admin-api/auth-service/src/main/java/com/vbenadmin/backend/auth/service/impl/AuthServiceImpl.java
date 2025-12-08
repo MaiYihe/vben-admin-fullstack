@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
-import com.vbenadmin.backend.auth.models.vo.TokenVO;
 import com.vbenadmin.backend.auth.service.IAuthService;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commoncore.models.others.jwt.TokenPayload;
@@ -20,6 +19,7 @@ import com.vbenadmin.backend.commoncore.utils.JWTUtils;
 import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.rpc.IRbacRpcService;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,8 @@ public class AuthServiceImpl implements IAuthService {
 
     @DubboReference
     private IUserRpcService userRpcService;
+    @DubboReference
+    private IRbacRpcService rbacRpcService;
 
     private final RedisUtils redisUtils;
 
@@ -119,7 +121,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public List<String> getAccessCodes(Long userId) {
-        return userRpcService.getAccessCodes(userId);
+        return rbacRpcService.getAccessCodes(userId);
     }
 
     // 生成出 JWT
