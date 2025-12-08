@@ -1,10 +1,15 @@
 package com.vbenadmin.backend.auth.contoller;
 
+import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
 import com.vbenadmin.backend.auth.service.IAuthService;
 import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.vbenadmin.backend.auth.models.vo.TokenVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,42 +29,90 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenVO>> login(@Validated @RequestBody LoginRequest request) {
-        TokenVO tokens = authService.login(request);
-        return ResponseEntity.ok(ApiResponse.success(tokens));
+    public ResponseEntity<ApiResponse<TokenVO>> login(@Validated @RequestBody LoginRequest request,
+            HttpServletResponse response) {
+        TokenPairDTO tokenPair = authService.login(request);
+
+        // 为 response 的 http 写入 cookie（refreshToken）
+        addRefreshTokenCookie(response, tokenPair);
+        // 生成 tokenVO
+        TokenVO tokenVO = TokenVO.builder()
+                .accessToken(tokenPair.getAccessToken())
+                .build();
+        return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<TokenVO>> register(@Validated @RequestBody RegisterRequest request) {
-        TokenVO tokens = authService.register(request);
-        return ResponseEntity.ok(ApiResponse.success(tokens));
+    public ResponseEntity<ApiResponse<TokenVO>> register(@Validated @RequestBody RegisterRequest request,
+            HttpServletResponse response) {
+        TokenPairDTO tokenPair = authService.register(request);
+
+        addRefreshTokenCookie(response, tokenPair);
+        TokenVO tokenVO = TokenVO.builder()
+                .accessToken(tokenPair.getAccessToken())
+                .build();
+
+        return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
 
+    /**
+     * 刷新 accessToken
+     * @return String accessToken
+     */
     @PostMapping("/refresh")
-    public  ResponseEntity<ApiResponse<String>> refresh(@Validated @RequestBody String refreshToken) {
+    public ResponseEntity<ApiResponse<String>> refresh(@Validated @RequestBody String refreshToken) {
         String token = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(token));
     }
 
     /**
      * 登出接口
-     * AccessCheck：需要先登入才能登出（防止内部微服务调用）
+     * AccessCheck：需要先登入才能登出（防止内部微服务绕过网关调用）
      */
     @AccessCheck
     @PostMapping("logout")
-    public ResponseEntity<ApiResponse<String>> logout(@Validated @CookieValue("refreshToken")  String refreshToken) {
-        authService.logout(refreshToken); // 交给 service 处理
+    public ResponseEntity<ApiResponse<String>> logout(
+            @Validated @CookieValue("refreshToken") String refreshToken,
+            HttpServletResponse response) {
+        // 交给 service 处理
+        authService.logout(refreshToken);
+        // response 删除 refreshToken 的 cookie
+        delRefreshTokenCookie(response);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     /**
      * 获取用户权限码
-     * AccessCheck：需要先登入才能查权限码（防止内部微服务调用）
+     * AccessCheck：需要先登入才能查权限码（防止内部微服务绕过网关调用）
      */
     @AccessCheck
     @GetMapping("/codes")
     public ResponseEntity<ApiResponse<List<String>>> getAccessCodes(@RequestHeader("X-User-Id") Long userId) {
         List<String> codes = authService.getAccessCodes(userId);
         return ResponseEntity.ok(ApiResponse.success(codes));
+    }
+
+    private void addRefreshTokenCookie(HttpServletResponse response, TokenPairDTO tokenPair) {
+        Cookie cookie = new Cookie("refreshToken", tokenPair.getRefreshToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // HTTPS 才能传输（生产环境必须开启）
+        cookie.setPath("/"); // 所有接口都可带上 Cookie
+        cookie.setMaxAge(tokenPair.getRefreshExipre().intValue()); // 告诉浏览器何时自动删除 refreshToken Cookie
+        response.addCookie(cookie);
+
+        // 单独追加 SameSite 属性
+        String cookieValue = String.format("refreshToken=%s; HttpOnly; Secure; Path=/; Max-Age=%d; SameSite=Lax",
+                tokenPair.getRefreshExipre().intValue());
+
+        response.setHeader("Set-Cookie", cookieValue);
+    }
+
+    private void delRefreshTokenCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // HTTPS 才能传输（生产环境必须开启）
+        cookie.setPath("/"); // 所有接口都可带上 Cookie
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }

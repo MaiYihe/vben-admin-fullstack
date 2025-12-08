@@ -29,19 +29,19 @@ public class GatewayGlobalFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().toString();
 
-        // ✅ TODO: 匹配到白名单路径放行
+        // ✅ 匹配到白名单路径放行
         if (ignoreUrlsConfig.getUrls().stream().anyMatch(path::startsWith)) {
             return chain.filter(exchange);
         }
 
-        // ✅ TODO: 检查 token（是否携带）
+        // ✅ 检查 token（是否携带）
         String token = exchange.getRequest().getHeaders().getFirst("Authorization");
         if (token == null || !token.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        // ✅ TODO: 验证 JWT（JWT 格式、JWT 是否有效），验证成功则携带新请求
+        // ✅ 验证 JWT（JWT 格式、JWT 是否有效），验证成功则携带新请求
         // 去掉前缀 "Bearer "
         token = token.substring(7);
         // 调用 JWT 工具类验证

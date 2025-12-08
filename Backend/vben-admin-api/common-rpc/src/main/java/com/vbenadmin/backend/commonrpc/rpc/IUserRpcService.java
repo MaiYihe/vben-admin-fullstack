@@ -7,7 +7,7 @@ import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
 import java.util.List;
 
 public interface IUserRpcService {
-    UserInfoDTO getPasswordByUserName(String username);
+    UserInfoDTO getUserInfoByUserName(String username);
 
     boolean existUser(String username);
 

@@ -22,7 +22,7 @@ public class UserRpcServiceImpl implements IUserRpcService {
     private final PermissionMapper permissionMapper;
 
     @Override
-    public UserInfoDTO getPasswordByUserName(String username) {
+    public UserInfoDTO getUserInfoByUserName(String username) {
         User user = userService.lambdaQuery()
                 .eq(User::getUsername,username)
                 .list()
