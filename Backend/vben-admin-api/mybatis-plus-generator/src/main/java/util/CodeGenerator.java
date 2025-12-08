@@ -11,7 +11,7 @@ import java.util.Collections;
 
 // controller service mapper entity：java - 指定输出目录+包名+包模块名字
 // mapper.xml 的位置：resources
-class CodeGenerator{
+public class CodeGenerator{
     public static void main(String[] args) {
         FastAutoGenerator.create(
                 "jdbc:mysql://localhost:3306/vbenadmin?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
@@ -44,7 +44,7 @@ class CodeGenerator{
                                 .xml("mapper.xml")
                 )
                 .strategyConfig(builder ->
-                                builder.addInclude("sys_role_permission") // 设置需要生成的表名 "ms_article" "ms_tag"
+                                builder.addInclude("sys_resource") // 设置需要生成的表名 "ms_article" "ms_tag"
                                         .addTablePrefix("sys_") // 设置过滤表前缀
 //                                .entityBuilder().enableLombok().enableFileOverride() // 开启文件覆盖 ，开启 Lombok
 //                                .mapperBuilder().enableFileOverride() // 开启文件覆盖
