@@ -1,6 +1,5 @@
 package com.vbenadmin.codegenerator.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import lombok.Getter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 /**
  * <p>
- * 用户-角色关系表
+ * 角色-资源节点关系表
  * </p>
  *
  * @author maihehe
@@ -17,20 +16,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@TableName("sys_user_role")
-public class UserRole implements Serializable {
+@TableName("sys_role_resource")
+public class RoleResource implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户ID
-     */
-    @TableId("user_id")
-    private Long userId;
-
-    /**
      * 角色ID
      */
-    @TableId("role_id")
     private Long roleId;
+
+    /**
+     * 资源节点ID
+     */
+    private Long resourceId;
 }

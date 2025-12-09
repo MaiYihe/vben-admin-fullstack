@@ -5,14 +5,14 @@ import org.springframework.stereotype.Controller;
 
 /**
  * <p>
- * 角色-权限关系表 前端控制器
+ * 系统用户表 前端控制器
  * </p>
  *
  * @author maihehe
- * @since 2025-11-16
+ * @since 2025-12-08
  */
 @Controller
-@RequestMapping("/rolePermission")
-public class RolePermissionController {
+@RequestMapping("/user")
+public class UserController {
 
 }
