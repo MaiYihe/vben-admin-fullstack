@@ -15,6 +15,7 @@
     </parent>
 
     <dependencies>
+
         <!--        Redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,6 +46,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Jackson Databind 依赖 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
     </dependencies>
