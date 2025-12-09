@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class TokenPayload {
-    private Long userId;
+    private String userId;
     private Long issuedAt; //签发时间
     private Long expireTime; //过期时间
     private String jti;

@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-
 /**
  * 1. 验证 JWT
  * - Gateway 仅验证 token，不管权限（只验证 Token 是否存在、是否合法、是否过期）
@@ -52,11 +51,12 @@ public class GatewayGlobalFilter implements GlobalFilter {
             return exchange.getResponse().setComplete();
         }
         // 从 JWT 中取出 userId（如果有的话）
-        Long userId = ((Number) claims.get("userId")).longValue();
+        Object uid = claims.get("userId");
+        String userId = uid != null ? uid.toString() : null;
         // 把 userId 放进请求头，传给下游微服务
         ServerHttpRequest newRequest = exchange.getRequest()
                 .mutate()
-                .header("X-User-Id", String.valueOf(userId))
+                .header("X-User-Id",userId)
                 .build();
 
         // 放行（携带新请求）

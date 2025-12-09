@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Data
 @Builder
 public class UserInfoDTO implements Serializable {
-    private Long id;
+    private String id;
     private String username;
     private String password;
 }

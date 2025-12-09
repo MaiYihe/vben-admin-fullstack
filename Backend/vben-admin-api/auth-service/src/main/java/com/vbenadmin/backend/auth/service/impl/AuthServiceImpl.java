@@ -59,7 +59,7 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         // 创建 TokenPairDTO
-        Long userId = userInfoDTO.getId();
+        String userId = userInfoDTO.getId();
         return generateTokenPair(userId);
     }
 
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements IAuthService {
 
         // 把用户名和密码一起写入数据库
         UserCreateRequest userCreateRequest = new UserCreateRequest(username, hashedPassword);
-        Long userId = userRpcService.createUser(userCreateRequest);
+        String userId = userRpcService.createUser(userCreateRequest);
 
         // 创建 TokenPairDTO
         return generateTokenPair(userId);
@@ -102,7 +102,8 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         // 从 JWT 中取出 userId（如果有的话）
-        Long userId = ((Number) claims.get("userId")).longValue();
+        Object uid = claims.get("userId");
+        String userId = uid != null ? uid.toString() : null;
         // 返回新的 Access Token
         return createToken(userId, ACCESS_EXPIRE, UUID.randomUUID().toString());
     }
@@ -120,12 +121,12 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public List<String> getAccessCodes(Long userId) {
+    public List<String> getAccessCodes(String userId) {
         return rbacRpcService.getAccessCodes(userId);
     }
 
     // 生成出 JWT
-    private String createToken(Long userId, Long expireTime, String jti) {
+    private String createToken(String userId, Long expireTime, String jti) {
         long now = System.currentTimeMillis(); // 返回一个 long 类型的毫秒时间戳
 
         TokenPayload Payload = TokenPayload.builder()
@@ -138,7 +139,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     // 生成 tokenPair（含写入 Redis 逻辑）
-    private TokenPairDTO generateTokenPair(Long userId) {
+    private TokenPairDTO generateTokenPair(String userId) {
         String accessJti = UUID.randomUUID().toString();
         String accessToken = createToken(userId, ACCESS_EXPIRE, accessJti);
 

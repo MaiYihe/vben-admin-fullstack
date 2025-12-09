@@ -88,7 +88,7 @@ public class AuthController {
      */
     @AccessCheck
     @GetMapping("/codes")
-    public ResponseEntity<ApiResponse<List<String>>> getAccessCodes(@RequestHeader("X-User-Id") Long userId) {
+    public ResponseEntity<ApiResponse<List<String>>> getAccessCodes(@RequestHeader("X-User-Id") String userId) {
         List<String> codes = authService.getAccessCodes(userId);
         return ResponseEntity.ok(ApiResponse.success(codes));
     }
