@@ -87,6 +87,7 @@
     "lefthook": "catalog:",
     "playwright": "catalog:",
     "rimraf": "catalog:",
+    "sass": "1.77.4",
     "tailwindcss": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",

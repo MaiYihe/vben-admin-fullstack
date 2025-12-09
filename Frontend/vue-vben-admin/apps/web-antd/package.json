@@ -51,6 +51,7 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@types/json-bigint": "catalog:"
+    "@types/json-bigint": "catalog:",
+    "sass": "1.77.4"
   }
 }
