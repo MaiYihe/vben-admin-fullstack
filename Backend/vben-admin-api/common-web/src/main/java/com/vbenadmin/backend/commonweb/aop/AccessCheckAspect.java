@@ -1,10 +1,5 @@
 package com.vbenadmin.backend.commonweb.aop;
 
-import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
-import com.vbenadmin.backend.commoncore.exception.BizException;
-import com.vbenadmin.backend.commoncore.utils.RedisUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,7 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.List;
+import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
+import com.vbenadmin.backend.commoncore.exception.BizException;
+import com.vbenadmin.backend.commoncore.utils.RedisUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @Aspect
@@ -34,33 +34,24 @@ public class AccessCheckAspect {
         String[] requiredCodes = accessCheck.value();
 
         // 获取 Request
-        ServletRequestAttributes attrs =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attrs == null) {
-            throw new BizException(40000,"非 HTTP 请求，无法鉴权");
+            throw new BizException(40000, "非 HTTP 请求，无法鉴权");
         }
         HttpServletRequest request = attrs.getRequest();
 
         // 获取 userId
         String userId = request.getHeader("X-User-Id");
         if (userId == null) {
-            throw new BizException(40000,"请求头缺失 X-User-Id");
+            throw new BizException(40000, "请求头缺失 X-User-Id");
         }
 
-        // 从 Redis 拿用户权限
-        List<String> accessCodes = redisUtils.get(
-                "user:access:" + userId,
-                List.class
-        );
-
-        if (accessCodes == null) {
-            throw new BizException(40300,"无权限访问");
-        }
-
-        // 权限校验：required ⊆ userAccess
+        // 权限校验：required ⊆ userAccess(Set)
+        String redisKey = "user:access:" + userId;
         for (String required : requiredCodes) {
-            if (!accessCodes.contains(required)) {
-                throw new BizException(40300,"无权限访问：" + required);
+            boolean hasPermission = redisUtils.sIsMember(redisKey, required);
+            if (!hasPermission) {
+                throw new BizException(40300, "无权限访问：" + required);
             }
         }
 

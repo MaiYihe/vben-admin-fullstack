@@ -3,6 +3,7 @@ package com.vbenadmin.backend.auth.service.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -96,7 +97,7 @@ public class AuthServiceImpl implements IAuthService {
         // 校验 jti 的 Redis 状态
         String jti = (String) claims.get("jti");
         String key = "refreshToken:" + jti;
-        String flag = redisUtils.get(key, String.class);
+        String flag = redisUtils.get(key);
         if (flag == null) { // 拿不到 value，说明已经过期了
             throw new BizException(40101, "Token 无效或已过期，请重新登录");
         }
@@ -146,7 +147,7 @@ public class AuthServiceImpl implements IAuthService {
         String refreshJti = UUID.randomUUID().toString();
         String refreshToken = createToken(userId, REFRESH_EXPIRE, refreshJti);
 
-        redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE);
+        redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE,TimeUnit.MINUTES);
 
         return TokenPairDTO.builder()
                 .accessToken(accessToken)

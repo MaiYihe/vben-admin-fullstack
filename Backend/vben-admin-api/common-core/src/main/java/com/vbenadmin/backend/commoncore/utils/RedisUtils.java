@@ -1,22 +1,21 @@
 package com.vbenadmin.backend.commoncore.utils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RedisUtils {
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -27,24 +26,52 @@ public class RedisUtils {
 
     // ============================ String ============================
 
-    // 普通 set（无过期）
-    public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    // 普通字符串 set
+    public void set(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
     }
 
-    // 普通 set（无过期）
-    public void set(String key, Object value, long timeout, TimeUnit unit) {
-        redisTemplate.opsForValue().set(key, value, timeout, unit);
+    // 普通字符串 set + 过期时间
+    public void set(String key, String value, long timeout, TimeUnit unit) {
+        stringRedisTemplate.opsForValue().set(key, value, timeout, unit);
     }
 
-    // 查询得到单一结果
-    public <T> T get(String key, Class<T> clazz) {
-        Object value = redisTemplate.opsForValue().get(key);
-        return value == null ? null : clazz.cast(value);
+    // 获取字符串
+    public String get(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
     }
 
-    // 查询得到 List
-    public <T> List<T> getList(String key, Class<T> clazz) {
+    /** 原子自增（登录失败次数、计数器等） */
+    public Long increment(String key) {
+        return stringRedisTemplate.opsForValue().increment(key);
+    }
+
+    // ============================ JSON ============================
+    /** 存对象（JSON） */
+    public <T> void setJson(String key, T value, long timeout, TimeUnit unit) {
+        try {
+            String json = objectMapper.writeValueAsString(value);
+            stringRedisTemplate.opsForValue().set(key, json, timeout, unit);
+        } catch (Exception e) {
+            throw new RuntimeException("Redis JSON 序列化失败", e);
+        }
+    }
+
+    /** 取对象（JSON） */
+    public <T> T getJson(String key, Class<T> clazz) {
+        try {
+            String json = stringRedisTemplate.opsForValue().get(key);
+            if (json == null) {
+                return null;
+            }
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException("Redis JSON 反序列化失败", e);
+        }
+    }
+
+    /** 取 List（JSON） */
+    public <T> List<T> getJsonList(String key, Class<T> clazz) {
         try {
             String json = stringRedisTemplate.opsForValue().get(key);
             if (json == null) {
@@ -54,38 +81,50 @@ public class RedisUtils {
                     .constructCollectionType(List.class, clazz);
             return objectMapper.readValue(json, type);
         } catch (Exception e) {
-            throw new RuntimeException("Redis 读取 List 反序列化失败", e);
+            throw new RuntimeException("Redis JSON List 反序列化失败", e);
         }
     }
 
-    // 专门为 Token 提供的：只传秒数
-    public void set(String key, Object value, long timeoutSeconds) {
-        redisTemplate.opsForValue().set(key, value, timeoutSeconds, TimeUnit.SECONDS);
+    // ============================ Set ============================
+    public void sAdd(String key, Collection<String> values) {
+        stringRedisTemplate.opsForSet()
+                .add(key, values.toArray(new String[0]));
     }
 
+    public Set<String> sMembers(String key) {
+        return stringRedisTemplate.opsForSet().members(key);
+    }
+
+    public boolean sIsMember(String key, String value) {
+        return Boolean.TRUE.equals(
+                stringRedisTemplate.opsForSet().isMember(key, value));
+    }
+
+    // ============================ Hash（全部 String） ============================
+    public void hSet(String key, String field, String value) {
+        stringRedisTemplate.opsForHash().put(key, field, value);
+    }
+
+    public String hGet(String key, String field) {
+        Object val = stringRedisTemplate.opsForHash().get(key, field);
+        return val == null ? null : val.toString();
+    }
+
+    // ============================ Key 操作 ============================
     public boolean delete(String key) {
-        return Boolean.TRUE.equals(redisTemplate.delete(key));
+        return Boolean.TRUE.equals(stringRedisTemplate.delete(key));
     }
 
     public boolean hasKey(String key) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
     }
 
-    // ============================ Hash ============================
-    public void hSet(String key, String field, Object value) {
-        redisTemplate.opsForHash().put(key, field, value);
-    }
-
-    public Object hGet(String key, String field) {
-        return redisTemplate.opsForHash().get(key, field);
-    }
-
-    // ============================ 过期时间 ============================
     public void expire(String key, long timeout, TimeUnit unit) {
-        redisTemplate.expire(key, timeout, unit);
+        stringRedisTemplate.expire(key, timeout, unit);
     }
 
     public Long getExpire(String key) {
-        return redisTemplate.getExpire(key);
+        return stringRedisTemplate.getExpire(key);
     }
+
 }
