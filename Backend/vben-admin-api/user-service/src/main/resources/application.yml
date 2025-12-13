@@ -14,6 +14,7 @@ spring:
 dubbo:
   application:
     name: user-service
+    qos-enable: false # 关闭 qos 服务，会占用 22222 端口
   registry:
     address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
   protocol:

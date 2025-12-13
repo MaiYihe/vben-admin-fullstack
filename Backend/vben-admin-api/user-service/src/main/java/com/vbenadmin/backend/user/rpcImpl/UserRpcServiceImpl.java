@@ -5,21 +5,15 @@ import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
 import com.vbenadmin.backend.user.entity.User;
-import com.vbenadmin.backend.user.mapper.PermissionMapper;
-import com.vbenadmin.backend.user.mapper.RoleMapper;
 import com.vbenadmin.backend.user.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
-
-import java.util.List;
 
 
 @DubboService
 @RequiredArgsConstructor
 public class UserRpcServiceImpl implements IUserRpcService {
     private final IUserService userService;
-    private final RoleMapper roleMapper;
-    private final PermissionMapper permissionMapper;
 
     @Override
     public UserInfoDTO getUserInfoByUserName(String username) {
@@ -54,7 +48,7 @@ public class UserRpcServiceImpl implements IUserRpcService {
     }
 
     @Override
-    public Long createUser(UserCreateRequest userCreateRequest) {
+    public String createUser(UserCreateRequest userCreateRequest) {
         // 创建 User 实体
         User user = new User();
         user.setUsername(userCreateRequest.getUsername());
@@ -71,12 +65,4 @@ public class UserRpcServiceImpl implements IUserRpcService {
         return user.getId();
     }
 
-    @Override
-    public List<String> getAccessCodes(Long userId) {
-        // 查询用户角色 ID
-        List<Long> roleIds = roleMapper.getRoleIdsByUserId(userId);
-
-        // 查询角色权限代码
-        return permissionMapper.getCodesByRoleIds(roleIds);
-    }
 }

@@ -3,28 +3,32 @@ package com.vbenadmin.backend.user.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 /**
  * <p>
- * 用户表
+ * 系统用户表
  * </p>
  *
  * @author maihehe
- * @since 2025-11-06
+ * @since 2025-12-08
  */
+@Getter
+@Setter
+@ToString
 @TableName("sys_user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键ID
+     * 用户ID
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
 
     /**
      * 用户名
@@ -32,96 +36,36 @@ public class User implements Serializable {
     private String username;
 
     /**
-     * 密码（加密存储）
+     * 密码hash
      */
     private String password;
 
     /**
-     * 昵称
+     * 真实姓名
      */
-    private String nickname;
+    private String realName;
 
     /**
-     * 状态(1启用 0禁用)
+     * 头像地址
+     */
+    private String avatar;
+
+    /**
+     * 个人简介
+     */
+    private String description;
+
+    /**
+     * 默认首页路径
+     */
+    private String homePath;
+
+    /**
+     * 状态 1启用 0禁用
      */
     private Byte status;
 
-    /**
-     * 创建时间
-     */
     private LocalDateTime createTime;
 
-    /**
-     * 更新时间
-     */
     private LocalDateTime updateTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public Byte getStatus() {
-        return status;
-    }
-
-    public void setStatus(Byte status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "SysUser{" +
-            "id = " + id +
-            ", username = " + username +
-            ", password = " + password +
-            ", nickname = " + nickname +
-            ", status = " + status +
-            ", createTime = " + createTime +
-            ", updateTime = " + updateTime +
-        "}";
-    }
 }
