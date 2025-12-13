@@ -47,6 +47,12 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- LoadBalancer，让 lb:// 可用 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
