@@ -14,13 +14,13 @@ import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
 import com.vbenadmin.backend.auth.service.IAuthService;
+import com.vbenadmin.backend.auth.service.PermissionQueryService;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commoncore.models.others.jwt.TokenPayload;
 import com.vbenadmin.backend.commoncore.utils.JWTUtils;
 import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
-import com.vbenadmin.backend.commonrpc.rpc.IRbacRpcService;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,8 @@ public class AuthServiceImpl implements IAuthService {
 
     @DubboReference
     private IUserRpcService userRpcService;
-    @DubboReference
-    private IRbacRpcService rbacRpcService;
 
+    private final PermissionQueryService permissionQueryService;
     private final RedisUtils redisUtils;
 
     public static final long ACCESS_EXPIRE = 30 * 60; // 30 min，单位秒
@@ -105,8 +104,12 @@ public class AuthServiceImpl implements IAuthService {
         // 从 JWT 中取出 userId（如果有的话）
         Object uid = claims.get("userId");
         String userId = uid != null ? uid.toString() : null;
+
+        // 查询得到 accessCodes
+        List<String> accessCodes = permissionQueryService.getAccessCodes(userId);
+
         // 返回新的 Access Token
-        return createToken(userId, ACCESS_EXPIRE, UUID.randomUUID().toString());
+        return createAccessToken(userId, accessCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
     }
 
     @Override
@@ -123,11 +126,11 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public List<String> getAccessCodes(String userId) {
-        return rbacRpcService.getAccessCodes(userId);
+        return permissionQueryService.getAccessCodes(userId);
     }
 
-    // 生成出 JWT
-    private String createToken(String userId, Long expireTime, String jti) {
+    // 生成出 JWT RefreshToken
+    private String createRefreshToken(String userId, Long expireTime, String jti) {
         long now = System.currentTimeMillis(); // 返回一个 long 类型的毫秒时间戳
 
         TokenPayload Payload = TokenPayload.builder()
@@ -139,15 +142,30 @@ public class AuthServiceImpl implements IAuthService {
         return JWTUtils.createToken(Payload); // Java 的 jjwt api，要求时间必须是毫秒
     }
 
-    // 生成 tokenPair（含写入 Redis 逻辑）
+    // 生成出 JWT AccessToken
+    private String createAccessToken(String userId, List<String> accessCodes, Long expireTime, String jti) {
+        long now = System.currentTimeMillis();
+
+        TokenPayload Payload = TokenPayload.builder()
+                .userId(userId)
+                .accessCodes(accessCodes)
+                .issuedAt(now)
+                .expireTime(now + expireTime * 1000)
+                .jti(jti)
+                .build();
+        return JWTUtils.createToken(Payload);
+    }
+
+    // 生成 tokenPair（含 refreshToken 写入 Redis 逻辑）
     private TokenPairDTO generateTokenPair(String userId) {
         String accessJti = UUID.randomUUID().toString();
-        String accessToken = createToken(userId, ACCESS_EXPIRE, accessJti);
+        List<String> accessCodes = permissionQueryService.getAccessCodes(userId);
+        String accessToken = createAccessToken(userId, accessCodes, ACCESS_EXPIRE, accessJti);
 
         String refreshJti = UUID.randomUUID().toString();
-        String refreshToken = createToken(userId, REFRESH_EXPIRE, refreshJti);
+        String refreshToken = createRefreshToken(userId, REFRESH_EXPIRE, refreshJti);
 
-        redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE,TimeUnit.MINUTES);
+        redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE, TimeUnit.MINUTES);
 
         return TokenPairDTO.builder()
                 .accessToken(accessToken)

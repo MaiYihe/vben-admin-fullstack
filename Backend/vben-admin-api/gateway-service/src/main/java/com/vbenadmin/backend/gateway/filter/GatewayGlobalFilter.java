@@ -1,22 +1,22 @@
 package com.vbenadmin.backend.gateway.filter;
 
-import com.vbenadmin.backend.commoncore.utils.JWTUtils;
-import com.vbenadmin.backend.gateway.config.IgnoreUrlsConfig;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.vbenadmin.backend.commoncore.utils.JWTUtils;
+import com.vbenadmin.backend.gateway.config.IgnoreUrlsConfig;
+
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 /**
- * 1. 验证 JWT
+ * 验证 JWT
  * - Gateway 仅验证 token，不管权限（只验证 Token 是否存在、是否合法、是否过期）
- * 2. 解析 JWT，将 userId 放入请求头，供下游微服务使用
  */
 @Component
 @RequiredArgsConstructor
@@ -50,16 +50,7 @@ public class GatewayGlobalFilter implements GlobalFilter {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
-        // 从 JWT 中取出 userId（如果有的话）
-        Object uid = claims.get("userId");
-        String userId = uid != null ? uid.toString() : null;
-        // 把 userId 放进请求头，传给下游微服务
-        ServerHttpRequest newRequest = exchange.getRequest()
-                .mutate()
-                .header("X-User-Id",userId)
-                .build();
 
-        // 放行（携带新请求）
-        return chain.filter(exchange.mutate().request(newRequest).build());
+        return chain.filter(exchange);
     }
 }
