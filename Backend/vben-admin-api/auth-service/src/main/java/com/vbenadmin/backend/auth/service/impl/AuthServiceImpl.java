@@ -160,7 +160,7 @@ public class AuthServiceImpl implements IAuthService {
     private TokenPairDTO generateTokenPair(String userId) {
         String accessJti = UUID.randomUUID().toString();
         List<String> accessCodes = permissionQueryService.getAccessCodes(userId);
-        String accessToken = createAccessToken(userId, accessCodes, ACCESS_EXPIRE, accessJti);
+        String authToken = createAccessToken(userId, accessCodes, ACCESS_EXPIRE, accessJti);
 
         String refreshJti = UUID.randomUUID().toString();
         String refreshToken = createRefreshToken(userId, REFRESH_EXPIRE, refreshJti);
@@ -168,7 +168,7 @@ public class AuthServiceImpl implements IAuthService {
         redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE, TimeUnit.MINUTES);
 
         return TokenPairDTO.builder()
-                .accessToken(accessToken)
+                .authToken(authToken)
                 .refreshToken(refreshToken)
                 .refreshExipre(REFRESH_EXPIRE)
                 .build();

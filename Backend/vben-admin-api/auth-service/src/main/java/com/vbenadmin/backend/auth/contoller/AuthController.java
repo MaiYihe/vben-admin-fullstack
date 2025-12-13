@@ -37,7 +37,7 @@ public class AuthController {
         addRefreshTokenCookie(response, tokenPair);
         // 生成 tokenVO
         TokenVO tokenVO = TokenVO.builder()
-                .accessToken(tokenPair.getAccessToken())
+                .accessToken(tokenPair.getAuthToken())
                 .build();
         return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
@@ -49,16 +49,16 @@ public class AuthController {
 
         addRefreshTokenCookie(response, tokenPair);
         TokenVO tokenVO = TokenVO.builder()
-                .accessToken(tokenPair.getAccessToken())
+                .accessToken(tokenPair.getAuthToken())
                 .build();
 
         return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
 
     /**
-     * 刷新 accessToken
+     * 刷新 authToken
      * 
-     * @return String accessToken
+     * @return String authToken
      */
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<String>> refresh(@Validated @RequestBody String refreshToken) {
