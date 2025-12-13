@@ -1,10 +1,11 @@
-package com.vbenadmin.backend.commoncore.config;
+package com.vbenadmin.backend.commoncore.autoconfig;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 
 @Configuration
 public class RedisConfig {

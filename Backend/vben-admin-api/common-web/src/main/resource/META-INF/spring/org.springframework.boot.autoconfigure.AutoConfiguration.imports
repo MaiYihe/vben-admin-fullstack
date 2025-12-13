@@ -1,3 +1,0 @@
-com.vbenadmin.backend.commonweb.security.AccessCheckAspect
-com.vbenadmin.backend.commonweb.exception.GlobalExceptionHandler
-com.vbenadmin.backend.commonweb.filter.JwtContextFilter

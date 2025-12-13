@@ -1,1 +1,1 @@
-com.vbenadmin.backend.commoncore.config.RedisConfig
+com.vbenadmin.backend.commoncore.autoconfig.RedisConfig
