@@ -6,6 +6,7 @@ import com.vbenadmin.backend.auth.models.request.RegisterRequest;
 import com.vbenadmin.backend.auth.service.IAuthService;
 import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
+import com.vbenadmin.backend.commonweb.security.UserContextHolder;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -88,7 +89,8 @@ public class AuthController {
      */
     @AccessCheck
     @GetMapping("/codes")
-    public ResponseEntity<ApiResponse<List<String>>> getAccessCodes(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<ApiResponse<List<String>>> getAccessCodes() {
+        String userId = UserContextHolder.get().getUserId();
         List<String> codes = authService.getAccessCodes(userId);
         return ResponseEntity.ok(ApiResponse.success(codes));
     }

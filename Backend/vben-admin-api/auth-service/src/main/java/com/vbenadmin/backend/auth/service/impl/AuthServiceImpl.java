@@ -40,6 +40,18 @@ public class AuthServiceImpl implements IAuthService {
     public static final long ACCESS_EXPIRE = 30 * 60; // 30 min，单位秒
     public static final long REFRESH_EXPIRE = 7 * 24 * 60 * 60; // 7 days，单位秒
 
+    // 内部常量工具类，统一配置增删 redis
+    private final class RedisKeys {
+        private static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
+
+        public static String refreshTokenStore(String jti) {
+            return REFRESH_TOKEN_PREFIX + jti;
+        }
+
+        private RedisKeys() {
+        }
+    }
+
     @Override
     public TokenPairDTO login(LoginRequest request) {
         UserInfoDTO userInfoDTO = userRpcService.getUserInfoByUserName(request.getUsername());
@@ -95,7 +107,7 @@ public class AuthServiceImpl implements IAuthService {
 
         // 校验 jti 的 Redis 状态
         String jti = (String) claims.get("jti");
-        String key = "refreshToken:" + jti;
+        String key = RedisKeys.refreshTokenStore(jti);
         String flag = redisUtils.get(key);
         if (flag == null) { // 拿不到 value，说明已经过期了
             throw new BizException(40101, "Token 无效或已过期，请重新登录");
@@ -120,7 +132,7 @@ public class AuthServiceImpl implements IAuthService {
         }
 
         String jti = (String) claims.get("jti");
-        boolean deleted = redisUtils.delete("RefreshToken:" + jti); // 可能 Redis 自动过期，导致删除失败了，但是不重要
+        boolean deleted = redisUtils.delete(RedisKeys.refreshTokenStore(jti)); // 可能 Redis 自动过期，导致删除失败了，但是不重要
         log.info("Logout: refreshToken jti={}, deleted={}", jti, deleted);
     }
 
@@ -165,7 +177,7 @@ public class AuthServiceImpl implements IAuthService {
         String refreshJti = UUID.randomUUID().toString();
         String refreshToken = createRefreshToken(userId, REFRESH_EXPIRE, refreshJti);
 
-        redisUtils.set("refreshToken:" + refreshJti, userId, REFRESH_EXPIRE, TimeUnit.MINUTES);
+        redisUtils.set(RedisKeys.refreshTokenStore(refreshJti), userId, REFRESH_EXPIRE, TimeUnit.MINUTES);
 
         return TokenPairDTO.builder()
                 .authToken(authToken)
