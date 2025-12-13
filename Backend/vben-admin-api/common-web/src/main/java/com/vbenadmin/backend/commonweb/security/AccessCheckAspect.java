@@ -28,8 +28,18 @@ public class AccessCheckAspect {
             accessCheck = targetClass.getAnnotation(AccessCheck.class);
         }
 
+        // 还是没有 @AccessCheck → 完全放行
+        if (accessCheck == null) {
+            return joinPoint.proceed();
+        }
+
         // 拿到所有注解里的 required 权限
+        // @AccessCheck  ✔ value = {}；@AccessCheck() ✔ value = {}
         String[] requiredCodes = accessCheck.value();
+        // 如果 @AccessCheck 没有写任何 value 就直接放行
+        if(requiredCodes.length == 0){
+            return joinPoint.proceed();
+        }
 
         // 从上下文中拿用户信息（关键）
         UserContext context = UserContextHolder.get();

@@ -6,7 +6,7 @@ import com.vbenadmin.backend.commonweb.context.UserContext;
 /**
  * 存 / 取 当前请求的安全信息
  **/
-public class UserContextHolder {
+public final class UserContextHolder {
 
     private static final ThreadLocal<UserContext> CONTEXT = new ThreadLocal<>();
 
