@@ -25,6 +25,7 @@ pnpm run dev
 - JWT_AuthToken + RefreshToken 的（双 Token）登录安全机制    
 - RBAC 菜单 + 权限码设计 
 - Redis 维护登陆状态： (jti, refreshToken)
+    - JWT 机制允许多端登陆
 - mybatis-plus-generator 代码生成器
 
 - common-core/common-web/common-rpc 公告依赖模块
