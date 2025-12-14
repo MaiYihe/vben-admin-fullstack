@@ -137,7 +137,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public List<String> getAccessCodes(String userId) {
+    public List<String> getAuthCodes(String userId) {
         return permissionQueryService.getAuthCodes(userId);
     }
 
@@ -154,13 +154,13 @@ public class AuthServiceImpl implements IAuthService {
         return JWTUtils.createToken(Payload); // Java 的 jjwt api，要求时间必须是毫秒
     }
 
-    // 生成出 JWT AccessToken
-    private String createAccessToken(String userId, List<String> accessCodes, Long expireTime, String jti) {
+    // 生成出 JWT AccessToken（authCodes 、accessToken）
+    private String createAccessToken(String userId, List<String> authCodes, Long expireTime, String jti) {
         long now = System.currentTimeMillis();
 
         TokenPayload Payload = TokenPayload.builder()
                 .userId(userId)
-                .accessCodes(accessCodes)
+                .authCodes(authCodes)
                 .issuedAt(now)
                 .expireTime(now + expireTime * 1000)
                 .jti(jti)
@@ -180,7 +180,7 @@ public class AuthServiceImpl implements IAuthService {
         redisUtils.set(RedisKeys.refreshTokenStore(refreshJti), userId, REFRESH_EXPIRE, TimeUnit.MINUTES);
 
         return TokenPairDTO.builder()
-                .authToken(authToken)
+                .accessToken(authToken)
                 .refreshToken(refreshToken)
                 .refreshExipre(REFRESH_EXPIRE)
                 .build();

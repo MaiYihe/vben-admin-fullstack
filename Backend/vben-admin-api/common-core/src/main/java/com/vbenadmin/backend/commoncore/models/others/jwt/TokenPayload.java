@@ -12,7 +12,7 @@ import lombok.Data;
 @Builder
 public class TokenPayload {
     private String userId;
-    private List<String> accessCodes;
+    private List<String> authCodes;
     private Long issuedAt; //签发时间
     private Long expireTime; //过期时间
     private String jti; //Token 身份证号

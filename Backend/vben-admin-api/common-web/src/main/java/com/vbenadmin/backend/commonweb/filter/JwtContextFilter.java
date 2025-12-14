@@ -45,7 +45,7 @@ public class JwtContextFilter extends OncePerRequestFilter {
 
                 UserContext context = new UserContext(
                         payload.getUserId(),
-                        new HashSet<>(payload.getAccessCodes()));
+                        new HashSet<>(payload.getAuthCodes()));
 
                 UserContextHolder.set(context);
             } catch (Exception e) {

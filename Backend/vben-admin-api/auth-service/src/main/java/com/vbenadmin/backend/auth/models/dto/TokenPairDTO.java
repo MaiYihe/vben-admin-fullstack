@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class TokenPairDTO {
-    private String authToken;
+    private String accessToken;
     private String refreshToken;
     private Long refreshExipre;
 }

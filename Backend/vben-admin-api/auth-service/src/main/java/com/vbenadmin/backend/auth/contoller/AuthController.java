@@ -38,7 +38,7 @@ public class AuthController {
         addRefreshTokenCookie(response, tokenPair);
         // 生成 tokenVO
         TokenVO tokenVO = TokenVO.builder()
-                .accessToken(tokenPair.getAuthToken())
+                .accessToken(tokenPair.getAccessToken())
                 .build();
         return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
@@ -50,16 +50,16 @@ public class AuthController {
 
         addRefreshTokenCookie(response, tokenPair);
         TokenVO tokenVO = TokenVO.builder()
-                .accessToken(tokenPair.getAuthToken())
+                .accessToken(tokenPair.getAccessToken())
                 .build();
 
         return ResponseEntity.ok(ApiResponse.success(tokenVO));
     }
 
     /**
-     * 刷新 authToken
+     * 刷新 accessToken
      * 
-     * @return String authToken
+     * @return String accessToken
      */
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<String>> refresh(@CookieValue("refreshToken") String refreshToken) {
@@ -89,9 +89,9 @@ public class AuthController {
      */
     @AccessCheck
     @GetMapping("/codes")
-    public ResponseEntity<ApiResponse<List<String>>> getAccessCodes() {
+    public ResponseEntity<ApiResponse<List<String>>> getAuthCodes() {
         String userId = UserContextHolder.get().getUserId();
-        List<String> codes = authService.getAccessCodes(userId);
+        List<String> codes = authService.getAuthCodes(userId);
         return ResponseEntity.ok(ApiResponse.success(codes));
     }
 

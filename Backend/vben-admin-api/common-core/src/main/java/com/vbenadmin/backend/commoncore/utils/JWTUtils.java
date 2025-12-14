@@ -32,7 +32,7 @@ public class JWTUtils {
         // Claims（自定义载荷）
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", tokenPayload.getUserId());
-        claims.put("accessCodes", tokenPayload.getAccessCodes());
+        claims.put("authCodes", tokenPayload.getAuthCodes());
         claims.put("jti", tokenPayload.getJti());
 
         JwtBuilder jwtBuilder = Jwts.builder()
@@ -60,9 +60,9 @@ public class JWTUtils {
             String userId = claims.get("userId", String.class);
             String jti = claims.get("jti", String.class);
 
-            // accessCodes 需要特殊处理（List 反序列化）
-            List<?> rawList = claims.get("accessCodes", List.class);
-            List<String> accessCodes = rawList == null
+            // authCodes 需要特殊处理（List 反序列化）
+            List<?> rawList = claims.get("authCodes", List.class);
+            List<String> authCodes = rawList == null
                     ? Collections.emptyList()
                     : rawList.stream()
                             .map(String::valueOf)
@@ -73,7 +73,7 @@ public class JWTUtils {
 
             return TokenPayload.builder()
                     .userId(userId)
-                    .accessCodes(accessCodes)
+                    .authCodes(authCodes)
                     .jti(jti)
                     .issuedAt(issuedAt.getTime())
                     .expireTime(expiration.getTime())
