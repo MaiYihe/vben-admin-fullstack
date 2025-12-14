@@ -13,6 +13,12 @@ spring:
             - Path=/api/auth/**
           filters:
             - StripPrefix=1  # ✅ 去掉第一个路径段 (/api)
+        - id: user_route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=1
 
 # ✅ 自定义安全白名单配置（用于 GlobalFilter）
 secure:
