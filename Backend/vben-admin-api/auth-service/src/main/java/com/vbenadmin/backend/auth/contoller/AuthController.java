@@ -62,7 +62,7 @@ public class AuthController {
      * @return String authToken
      */
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<String>> refresh(@Validated @RequestBody String refreshToken) {
+    public ResponseEntity<ApiResponse<String>> refresh(@CookieValue("refreshToken") String refreshToken) {
         String token = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(token));
     }
@@ -74,7 +74,7 @@ public class AuthController {
     @AccessCheck
     @PostMapping("logout")
     public ResponseEntity<ApiResponse<String>> logout(
-            @Validated @CookieValue("refreshToken") String refreshToken,
+            @CookieValue("refreshToken") String refreshToken,
             HttpServletResponse response) {
         // 交给 service 处理
         authService.logout(refreshToken);
