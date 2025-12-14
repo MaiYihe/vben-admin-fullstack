@@ -5,11 +5,13 @@
     <select id="selectResourceIdsByRoleIds" resultType="java.lang.String"> SELECT DISTINCT
         resource_id FROM sys_role_resource WHERE role_id IN <foreach collection="roleIds" item="id"
             open="(" separator="," close=")"> #{id} </foreach>
+        AND resource_id IS NOT NULL
     </select>
 
     <select id="selectAuthCodesByResourceIds" resultType="java.lang.String"> SELECT DISTINCT
         auth_code FROM sys_resource WHERE id IN <foreach collection="resourceIds" item="id"
             open="(" separator="," close=")"> #{id} </foreach>
+        AND auth_code IS NOT NULL
     </select>
 
 </mapper>

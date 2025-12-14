@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     public List<String> getRoleIdsByUserId(String userId) {
-        return roleMapper.selectRoleIdsByUserId(userId);
+        List<String> roleIds = roleMapper.selectRoleIdsByUserId(userId);
+
+        if(roleIds == null || roleIds.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        return roleIds.stream()
+            .filter(Objects::nonNull)
+            .distinct()
+            .toList();
     }
 
 }

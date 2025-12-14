@@ -1,6 +1,8 @@
 package com.vbenadmin.backend.rbac.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -27,12 +29,31 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
 
     @Override
     public List<String> getResourceIdsByRoleIds(List<String> roleIds) {
-        return resourceMapper.selectResourceIdsByRoleIds(roleIds);
+        List<String> resouceIds = resourceMapper.selectResourceIdsByRoleIds(roleIds);
+
+        // SQL 查询结构不可能为 null，防御性编程
+        if (resouceIds == null || resouceIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return resouceIds.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
     }
 
     @Override
     public List<String> getAuthCodesByResourceIds(List<String> resouceIds) {
-        return resourceMapper.selectAuthCodesByResourceIds(resouceIds);
+        List<String> authCodes = resourceMapper.selectAuthCodesByResourceIds(resouceIds);
+
+        if(authCodes == null || authCodes.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        return authCodes.stream()
+            .filter(Objects::nonNull)
+            .distinct()
+            .toList();
     }
 
 }
