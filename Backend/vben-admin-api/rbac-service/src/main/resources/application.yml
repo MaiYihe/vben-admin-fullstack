@@ -19,7 +19,7 @@ dubbo:
     address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
   protocol:
     name: dubbo
-    port: -1
+    port: 20881
 
 server:
   port: 8084
