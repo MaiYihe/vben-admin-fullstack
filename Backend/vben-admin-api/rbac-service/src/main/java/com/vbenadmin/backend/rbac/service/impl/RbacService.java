@@ -20,7 +20,7 @@ public class RbacService implements IRbacService {
     private final IResourceService resourceService;
 
     @Override
-    public List<String> getAccessCodesByUserId(String userId) {
+    public List<String> getAuthCodesByUserId(String userId) {
         List<String> roleIds = roleService.getRoleIdsByUserId(userId);
         if (roleIds == null || roleIds.isEmpty()) {
             return Collections.emptyList();
@@ -28,7 +28,7 @@ public class RbacService implements IRbacService {
 
         List<String> resourceIds = resourceService.getResourceIdsByRoleIds(roleIds);
 
-        return resourceService.getAccessCodesByResourceIds(resourceIds);
+        return resourceService.getAuthCodesByResourceIds(resourceIds);
     }
 
 }

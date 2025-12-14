@@ -31,8 +31,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     }
 
     @Override
-    public List<String> getAccessCodesByResourceIds(List<String> resouceIds) {
-        return resourceMapper.selectAccessCodesByResourceIds(resouceIds);
+    public List<String> getAuthCodesByResourceIds(List<String> resouceIds) {
+        return resourceMapper.selectAuthCodesByResourceIds(resouceIds);
     }
 
 }

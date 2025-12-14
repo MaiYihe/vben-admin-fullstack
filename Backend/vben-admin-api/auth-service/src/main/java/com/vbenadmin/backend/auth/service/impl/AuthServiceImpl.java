@@ -118,7 +118,7 @@ public class AuthServiceImpl implements IAuthService {
         String userId = uid != null ? uid.toString() : null;
 
         // 查询得到 accessCodes
-        List<String> accessCodes = permissionQueryService.getAccessCodes(userId);
+        List<String> accessCodes = permissionQueryService.getAuthCodes(userId);
 
         // 返回新的 Access Token
         return createAccessToken(userId, accessCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
@@ -138,7 +138,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public List<String> getAccessCodes(String userId) {
-        return permissionQueryService.getAccessCodes(userId);
+        return permissionQueryService.getAuthCodes(userId);
     }
 
     // 生成出 JWT RefreshToken
@@ -170,9 +170,9 @@ public class AuthServiceImpl implements IAuthService {
 
     // 生成 tokenPair（含 refreshToken 写入 Redis 逻辑）
     private TokenPairDTO generateTokenPair(String userId) {
-        String accessJti = UUID.randomUUID().toString();
-        List<String> accessCodes = permissionQueryService.getAccessCodes(userId);
-        String authToken = createAccessToken(userId, accessCodes, ACCESS_EXPIRE, accessJti);
+        String authJti = UUID.randomUUID().toString();
+        List<String> authCodes = permissionQueryService.getAuthCodes(userId);
+        String authToken = createAccessToken(userId, authCodes, ACCESS_EXPIRE, authJti);
 
         String refreshJti = UUID.randomUUID().toString();
         String refreshToken = createRefreshToken(userId, REFRESH_EXPIRE, refreshJti);

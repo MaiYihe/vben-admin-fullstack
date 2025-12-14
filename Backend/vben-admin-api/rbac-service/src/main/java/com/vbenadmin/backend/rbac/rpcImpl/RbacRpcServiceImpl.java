@@ -18,8 +18,8 @@ public class RbacRpcServiceImpl implements IRbacRpcService{
     private final IRbacService rbacService;
 
     @Override
-    public List<String> getAccessCodes(String userId) {
-        return rbacService.getAccessCodesByUserId(userId);
+    public List<String> getAuthCodes(String userId) {
+        return rbacService.getAuthCodesByUserId(userId);
     }
 
 }

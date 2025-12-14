@@ -12,7 +12,7 @@ public class PermissionQueryService {
     @DubboReference
     private IRbacRpcService rbacRpcService;
 
-    public List<String> getAccessCodes(String userId){
-        return rbacRpcService.getAccessCodes(userId);
+    public List<String> getAuthCodes(String userId){
+        return rbacRpcService.getAuthCodes(userId);
     }
 }

@@ -3,10 +3,11 @@ package com.vbenadmin.backend.rbac.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vbenadmin.backend.rbac.entity.Resource;
 
-import io.lettuce.core.dynamic.annotation.Param;
 
 
 /**
@@ -21,6 +22,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
 
     List<String> selectResourceIdsByRoleIds(@Param("roleIds") List<String> roleIds);
 
-    List<String> selectAccessCodesByResourceIds(@Param("resourceIds") List<String> resourceIds);
+    List<String> selectAuthCodesByResourceIds(@Param("resourceIds") List<String> resourceIds);
 }
 

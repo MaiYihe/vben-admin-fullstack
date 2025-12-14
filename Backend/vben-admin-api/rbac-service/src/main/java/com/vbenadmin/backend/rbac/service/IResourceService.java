@@ -15,5 +15,5 @@ import com.vbenadmin.backend.rbac.entity.Resource;
  */
 public interface IResourceService extends IService<Resource> {
     List<String> getResourceIdsByRoleIds(List<String> roleIds);
-    List<String> getAccessCodesByResourceIds(List<String> resouceIds);
+    List<String> getAuthCodesByResourceIds(List<String> resouceIds);
 }
