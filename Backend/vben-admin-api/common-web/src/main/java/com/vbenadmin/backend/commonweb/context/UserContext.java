@@ -11,4 +11,5 @@ public class UserContext {
     
     private String userId;
     private Set<String> authCodes;
+    private String accessToken;
 }
