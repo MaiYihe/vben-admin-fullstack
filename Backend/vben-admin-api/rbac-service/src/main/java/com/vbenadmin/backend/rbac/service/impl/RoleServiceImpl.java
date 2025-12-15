@@ -41,4 +41,18 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             .toList();
     }
 
+    @Override
+    public List<String> getRolesByRoleIds(List<String> roleIds) {
+        List<String> roles = roleMapper.selectRolesByRoleIds(roleIds);
+
+        if(roles == null || roles.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        return roles.stream()
+            .filter(Objects::nonNull)
+            .distinct()
+            .toList();
+    }
+
 }

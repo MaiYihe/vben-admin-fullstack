@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RbacService implements IRbacService {
+public class RbacServiceImpl implements IRbacService {
 
     private final IRoleService roleService;
     private final IResourceService resourceService;
@@ -38,4 +38,13 @@ public class RbacService implements IRbacService {
         return authCodes;
     }
 
+    @Override
+    public List<String> getRolesByUserId(String userId) {
+        List<String> roleIds = roleService.getRoleIdsByUserId(userId);
+        if(roleIds == null || roleIds.isEmpty()){
+            return Collections.emptyList();
+        }
+        List<String> roles = roleService.getRolesByRoleIds(roleIds);
+        return roles;
+    }
 }

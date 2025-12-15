@@ -2,6 +2,7 @@ package com.vbenadmin.backend.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.user.entity.User;
+import com.vbenadmin.backend.user.models.vo.UserProfileVO;
 
 /**
  * <p>
@@ -12,5 +13,5 @@ import com.vbenadmin.backend.user.entity.User;
  * @since 2025-11-06
  */
 public interface IUserService extends IService<User> {
-
+    UserProfileVO getUserProfile();
 }

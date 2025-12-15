@@ -22,4 +22,9 @@ public class RbacRpcServiceImpl implements IRbacRpcService{
         return rbacService.getAuthCodesByUserId(userId);
     }
 
+    @Override
+    public List<String> getRoles(String userId) {
+        return rbacService.getRolesByUserId(userId);
+    }
+
 }

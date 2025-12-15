@@ -4,4 +4,5 @@ import java.util.List;
 
 public interface IRbacService {
     List<String> getAuthCodesByUserId(String userId);
+    List<String> getRolesByUserId(String userId);
 }

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vbenadmin.backend.rbac.mapper.RoleMapper">
-
+    <select id="selectRolesByRoleIds" resultType="java.lang.String"> SELECT r.name FROM sys_role r
+        WHERE r.id IN <foreach collection="roleIds"
+            item="roleId"
+            open="("
+            separator=","
+            close=")"> #{roleId} </foreach>
+    </select>
 </mapper>

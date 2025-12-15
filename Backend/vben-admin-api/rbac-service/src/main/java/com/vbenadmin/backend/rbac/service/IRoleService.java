@@ -15,4 +15,5 @@ import com.vbenadmin.backend.rbac.entity.Role;
  */
 public interface IRoleService extends IService<Role> {
     List<String> getRoleIdsByUserId(String userId);
+    List<String> getRolesByRoleIds(List<String> roleIds);
 }
