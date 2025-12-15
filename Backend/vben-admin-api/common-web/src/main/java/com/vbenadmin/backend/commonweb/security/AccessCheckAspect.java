@@ -47,7 +47,7 @@ public class AccessCheckAspect {
             throw new BizException(401, "未登录或登录状态失效");
         }
 
-        Set<String> userCodes = context.getAccessCodes();
+        Set<String> userCodes = context.getAuthCodes();
         if (userCodes == null || userCodes.isEmpty()) {
             throw new BizException(403, "无任何权限");
         }

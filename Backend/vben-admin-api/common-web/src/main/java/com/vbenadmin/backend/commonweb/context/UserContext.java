@@ -10,5 +10,5 @@ import lombok.Data;
 public class UserContext {
     
     private String userId;
-    private Set<String> accessCodes;
+    private Set<String> authCodes;
 }
