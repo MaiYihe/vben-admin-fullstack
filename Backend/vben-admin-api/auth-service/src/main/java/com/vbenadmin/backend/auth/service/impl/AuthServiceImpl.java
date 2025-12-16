@@ -61,6 +61,11 @@ public class AuthServiceImpl implements IAuthService {
             throw new BizException(40401, "用户不存在");
         }
 
+        // 用户未启用
+        if (!userInfoDTO.isEnabled()) {
+            throw new BizException(40103, "账户被禁用");
+        }
+
         // 对比请求密码和查询密码
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         String rawPassword = request.getPassword(); // 明文密码
