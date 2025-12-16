@@ -10,7 +10,7 @@ import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonrpc.rpc.IRbacRpcService;
 import com.vbenadmin.backend.commonweb.context.UserContext;
 import com.vbenadmin.backend.commonweb.security.UserContextHolder;
-import com.vbenadmin.backend.user.convert.IUserProfileMapper;
+import com.vbenadmin.backend.user.converter.IUserProfileConverter;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.mapper.UserMapper;
 import com.vbenadmin.backend.user.models.dto.LoginUserDTO;
@@ -33,12 +33,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @DubboReference
     private IRbacRpcService rbacRpcService;
-    private final IUserProfileMapper userProfileMapper;
+    private final IUserProfileConverter userProfileConverter;
     private final UserMapper userMapper;
 
     @Override
     public UserProfileVO getUserProfile() {
-        
+
         UserContext userContext = UserContextHolder.get();
         String userId = userContext.getUserId();
         // 获取 loginUserDTO
@@ -49,13 +49,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String accessToken = userContext.getAccessToken();
 
         // 转换生成 userProfileVO
-        return userProfileMapper.toUserProfileVO(loginUserDTO, roles, accessToken);
+        return userProfileConverter.toUserProfileVO(loginUserDTO, roles, accessToken);
 
     }
 
     private LoginUserDTO getCurrentLoginUser(String userId) {
         LoginUserDTO loginUser = userMapper.selectCurrentLoginUser(userId);
-        if(loginUser == null){
+        if (loginUser == null) {
             throw new BizException(40401, "登录用户不存在");
         }
 
