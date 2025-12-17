@@ -10,9 +10,10 @@ import com.vbenadmin.backend.user.models.dto.LoginUserDTO;
 import com.vbenadmin.backend.user.models.vo.UserProfileVO;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface IUserProfileConverter {
-    @Mapping(source = "dto.id", target = "userId")
-    UserProfileVO toUserProfileVO(
+public interface UserProfileVOConverter {
+
+    @Mapping(target = "userId", source = "dto.id")
+    UserProfileVO toVO(
             LoginUserDTO dto,
             List<String> roles,
             String accessToken);

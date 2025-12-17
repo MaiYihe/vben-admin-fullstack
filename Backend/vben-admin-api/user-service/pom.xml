@@ -27,6 +27,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!--        @NotNull 等-->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
         <!--    MySQL 驱动依赖-->
         <dependency>
             <groupId>mysql</groupId>

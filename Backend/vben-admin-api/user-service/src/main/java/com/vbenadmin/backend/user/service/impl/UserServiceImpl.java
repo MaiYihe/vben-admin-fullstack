@@ -1,10 +1,17 @@
 package com.vbenadmin.backend.user.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
@@ -24,6 +31,7 @@ import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 import com.vbenadmin.backend.user.models.vo.UserProfileVO;
+import com.vbenadmin.backend.user.service.IGroupService;
 import com.vbenadmin.backend.user.service.IUserService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +50,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @DubboReference
     private IRbacRpcService rbacRpcService;
-    private final IUserProfileConverter userProfileConverter;
+    private final UserProfileVOConverter userProfileVOConverter;
     private final UserMapper userMapper;
+    private final IGroupService groupService;
+    private final UserInfoVOConverter userInfoVOConverter;
+    private final UserInfoDTOConverter userInfoDTOConverter;
 
     @Override
     public UserProfileVO getUserProfile() {
@@ -53,12 +64,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 获取 loginUserDTO
         LoginUserDTO loginUserDTO = getCurrentLoginUser(userId);
         // 获取 roles
-        List<String> roles = rbacRpcService.getRoles(userId);
+        List<String> roles = rbacRpcService.getRoleNamesByUserId(userId);
         // 获取 accessToken
         String accessToken = userContext.getAccessToken();
 
         // 转换生成 userProfileVO
-        return userProfileConverter.toUserProfileVO(loginUserDTO, roles, accessToken);
+        return userProfileVOConverter.toVO(loginUserDTO, roles, accessToken);
 
     }
 

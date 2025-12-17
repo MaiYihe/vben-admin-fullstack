@@ -1,9 +1,13 @@
 package com.vbenadmin.backend.user.service;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.entity.User;
+import com.vbenadmin.backend.user.models.request.UserQueryRequest;
+import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 import com.vbenadmin.backend.user.models.vo.UserProfileVO;
 
 /**
@@ -20,4 +24,5 @@ public interface IUserService extends IService<User> {
     User createUser(UserCreateRequest userCreateRequest);
 
     UserProfileVO getUserProfile();
+    List<UserInfoVO> getUserListByRequest(UserQueryRequest request);
 }

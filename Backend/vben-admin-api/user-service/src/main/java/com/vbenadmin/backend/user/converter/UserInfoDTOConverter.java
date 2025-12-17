@@ -7,7 +7,7 @@ import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.user.entity.User;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface IUserConverter {
+public interface UserInfoDTOConverter {
 
-    UserInfoDTO toUserInfoDTO(User user);    
+    UserInfoDTO toDTO(User user);    
 }
