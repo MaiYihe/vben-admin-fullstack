@@ -13,6 +13,6 @@ public class PermissionQueryService {
     private IRbacRpcService rbacRpcService;
 
     public List<String> getAuthCodes(String userId){
-        return rbacRpcService.getAuthCodes(userId);
+        return rbacRpcService.getAuthCodesByUserId(userId);
     }
 }

@@ -20,8 +20,6 @@ import com.vbenadmin.backend.rbac.entity.Resource;
  */
 public interface ResourceMapper extends BaseMapper<Resource> {
 
-    List<String> selectResourceIdsByRoleIds(@Param("roleIds") List<String> roleIds);
-
-    List<String> selectAuthCodesByResourceIds(@Param("resourceIds") List<String> resourceIds);
+    List<String> selectAuthCodesByRoleIds(@Param("roleIds") List<String> roleIds);
 }
 

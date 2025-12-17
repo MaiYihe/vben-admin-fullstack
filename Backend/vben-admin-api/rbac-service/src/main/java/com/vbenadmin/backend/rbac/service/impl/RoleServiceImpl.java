@@ -42,8 +42,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public List<String> getRolesByRoleIds(List<String> roleIds) {
-        List<String> roles = roleMapper.selectRolesByRoleIds(roleIds);
+    public List<String> getRoleNamesByUserId(String userId) {
+        List<String> roles = roleMapper.selectRoleNamesByUserId(userId);
 
         if(roles == null || roles.isEmpty()){
             return Collections.emptyList();
