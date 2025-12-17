@@ -91,34 +91,38 @@ function onActionClick({
   }
 }
 
-const [Grid, gridApi] = useVbenVxeGrid({
-  gridEvents: {},
-  gridOptions: {
-    columns: useColumns(onActionClick),
-    height: 'auto',
-    keepSource: true,
-    pagerConfig: {
-      enabled: false,
-    },
-    proxyConfig: {
-      ajax: {
-        query: async (_params) => {
-          return await getDeptList();
-        },
+const gridOptions = {
+  columns: useColumns(onActionClick),
+  height: 'auto',
+  keepSource: true,
+
+  pagerConfig: {
+    enabled: false,
+  },
+
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await getDeptList();
       },
     },
-    toolbarConfig: {
-      custom: true,
-      export: false,
-      refresh: true,
-      zoom: true,
-    },
-    treeConfig: {
-      parentField: 'pid',
-      rowField: 'id',
-      transform: false,
-    },
-  } as VxeTableGridOptions,
+  },
+  toolbarConfig: {
+    custom: true,
+    export: false,
+    refresh: true,
+    zoom: true,
+  },
+
+  treeConfig: {
+    parentField: 'pid',
+    rowField: 'id',
+    transform: false,
+  },
+} satisfies VxeTableGridOptions;
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridEvents: {},
+  gridOptions,
 });
 
 /**

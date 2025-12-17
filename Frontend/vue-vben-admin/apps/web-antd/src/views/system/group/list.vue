@@ -25,39 +25,44 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
 });
 
 // Grid 表格
+const gridOptions = {
+  columns: useColumns(onActionClick, onStatusChange),
+  height: 'auto',
+  keepSource: true,
+
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }, formValues) => {
+        return await getGroupList({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+          ...formValues,
+        });
+      },
+    },
+  },
+
+  rowConfig: {
+    // 告诉 Grid，每行唯一标识是哪一个字段，它决定 Grid 如何识别、缓存、恢复、更新数据行
+    keyField: 'id',
+  },
+
+  toolbarConfig: {
+    custom: true,
+    export: false,
+    refresh: true,
+    search: true,
+    zoom: true,
+  },
+} satisfies VxeTableGridOptions<SystemUserApi.SystemUser>;
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
     submitOnChange: true,
   },
-  gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          return await getGroupList({
-            page: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-        },
-      },
-    },
-    // 告诉 Grid，每行唯一标识是哪一个字段，它决定 Grid 如何识别、缓存、恢复、更新数据行
-    rowConfig: {
-      keyField: 'id',
-    },
-    toolbarConfig: {
-      custom: true,
-      export: false,
-      refresh: true,
-      search: true,
-      zoom: true,
-    },
-  } as VxeTableGridOptions<SystemUserApi.SystemUser>,
+  gridOptions,
 });
 
 // 操作列回调函数。告诉 Grid：当用户点了按钮，要做什么

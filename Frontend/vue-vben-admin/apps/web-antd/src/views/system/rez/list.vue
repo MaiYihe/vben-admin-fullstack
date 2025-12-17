@@ -27,36 +27,42 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
   destroyOnClose: true,
 });
 
-const [Grid, gridApi] = useVbenVxeGrid({
-  gridOptions: {
-    columns: useColumns(onActionClick),
-    height: 'auto',
-    keepSource: true,
-    pagerConfig: {
-      enabled: false,
-    },
-    proxyConfig: {
-      ajax: {
-        query: async (_params) => {
-          return await getResourceList();
-        },
+const gridOptions = {
+  columns: useColumns(onActionClick),
+  height: 'auto',
+  keepSource: true,
+
+  pagerConfig: {
+    enabled: false,
+  },
+
+  proxyConfig: {
+    ajax: {
+      query: async () => {
+        return await getResourceList();
       },
     },
-    rowConfig: {
-      keyField: 'id',
-    },
-    toolbarConfig: {
-      custom: true,
-      export: false,
-      refresh: true,
-      zoom: true,
-    },
-    treeConfig: {
-      parentField: 'pid',
-      rowField: 'id',
-      transform: false,
-    },
-  } as VxeTableGridOptions,
+  },
+
+  rowConfig: {
+    keyField: 'id',
+  },
+
+  toolbarConfig: {
+    custom: true,
+    export: false,
+    refresh: true,
+    zoom: true,
+  },
+
+  treeConfig: {
+    parentField: 'pid',
+    rowField: 'id',
+    transform: false,
+  },
+} satisfies VxeTableGridOptions;
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions,
 });
 
 function onActionClick({

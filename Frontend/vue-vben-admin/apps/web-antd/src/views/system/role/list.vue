@@ -24,39 +24,41 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
   destroyOnClose: true,
 });
 
+const gridOptions = {
+  columns: useColumns(onActionClick, onStatusChange),
+  height: 'auto',
+  keepSource: true,
+
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }, formValues) => {
+        return await getRoleList({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+          ...formValues,
+        });
+      },
+    },
+  },
+  rowConfig: {
+    keyField: 'id',
+  },
+
+  toolbarConfig: {
+    custom: true,
+    export: false,
+    refresh: true,
+    search: true,
+    zoom: true,
+  },
+} satisfies VxeTableGridOptions<SystemRoleApi.SystemRole>;
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
     submitOnChange: true,
   },
-  gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          return await getRoleList({
-            page: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-        },
-      },
-    },
-    rowConfig: {
-      keyField: 'id',
-    },
-
-    toolbarConfig: {
-      custom: true,
-      export: false,
-      refresh: true,
-      search: true,
-      zoom: true,
-    },
-  } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
+  gridOptions,
 });
 
 function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {

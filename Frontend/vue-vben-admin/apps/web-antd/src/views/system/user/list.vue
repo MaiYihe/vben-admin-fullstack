@@ -24,39 +24,40 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
   destroyOnClose: true,
 });
 
+const gridOptions = {
+  columns: useColumns(onActionClick, onStatusChange),
+  height: 'auto',
+  keepSource: true,
+  proxyConfig: {
+    ajax: {
+      query: async ({ page }, formValues) => {
+        return await getUserList({
+          page: page.currentPage,
+          pageSize: page.pageSize,
+          ...formValues,
+        });
+      },
+    },
+  },
+  rowConfig: {
+    keyField: 'id',
+  },
+  toolbarConfig: {
+    custom: true,
+    export: false,
+    refresh: true,
+    search: true,
+    zoom: true,
+  },
+} satisfies VxeTableGridOptions<SystemUserApi.SystemUser>;
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
     submitOnChange: true,
   },
-  gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          return await getUserList({
-            page: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-        },
-      },
-    },
-    // 告诉 Grid，每行唯一标识是哪一个字段，它决定 Grid 如何识别、缓存、恢复、更新数据行
-    rowConfig: {
-      keyField: 'id',
-    },
-    toolbarConfig: {
-      custom: true,
-      export: false,
-      refresh: true,
-      search: true,
-      zoom: true,
-    },
-  } as VxeTableGridOptions<SystemUserApi.SystemUser>,
+  gridOptions,
 });
 
 // 操作列回调函数。告诉 Grid：当用户点了按钮，要做什么
@@ -92,7 +93,6 @@ function confirm(content: string, title: string) {
     });
   });
 }
-
 /**
  * 状态开关即将改变
  * @param newStatus 期望改变的状态值
