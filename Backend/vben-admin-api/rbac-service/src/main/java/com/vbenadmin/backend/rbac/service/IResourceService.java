@@ -1,7 +1,5 @@
 package com.vbenadmin.backend.rbac.service;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.rbac.entity.Resource;
 
@@ -14,5 +12,4 @@ import com.vbenadmin.backend.rbac.entity.Resource;
  * @since 2025-12-08
  */
 public interface IResourceService extends IService<Resource> {
-    List<String> getAuthCodesByRoleIds(List<String> roleIds);
 }

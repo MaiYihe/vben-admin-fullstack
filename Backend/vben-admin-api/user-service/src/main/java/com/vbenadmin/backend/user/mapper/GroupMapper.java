@@ -13,6 +13,5 @@ import com.vbenadmin.backend.user.entity.Group;
  * @since 2025-12-17
  */
 public interface GroupMapper extends BaseMapper<Group> {
-
 }
 

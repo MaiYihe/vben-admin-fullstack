@@ -1,27 +1,28 @@
 package com.vbenadmin.backend.auth.contoller;
 
-import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
-import com.vbenadmin.backend.auth.models.request.LoginRequest;
-import com.vbenadmin.backend.auth.models.request.RegisterRequest;
-import com.vbenadmin.backend.auth.service.IAuthService;
-import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
-import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
-import com.vbenadmin.backend.commonweb.security.UserContextHolder;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-
-import com.vbenadmin.backend.auth.models.vo.TokenVO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
+import com.vbenadmin.backend.auth.models.request.LoginRequest;
+import com.vbenadmin.backend.auth.models.request.RegisterRequest;
+import com.vbenadmin.backend.auth.models.vo.TokenVO;
+import com.vbenadmin.backend.auth.service.IAuthService;
+import com.vbenadmin.backend.commoncore.annotation.AccessCheck;
+import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 
-@Slf4j
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -90,8 +91,7 @@ public class AuthController {
     @AccessCheck
     @GetMapping("/codes")
     public ResponseEntity<ApiResponse<List<String>>> getAuthCodes() {
-        String userId = UserContextHolder.get().getUserId();
-        List<String> codes = authService.getAuthCodes(userId);
+        List<String> codes = authService.getAuthCodes();
         return ResponseEntity.ok(ApiResponse.success(codes));
     }
 

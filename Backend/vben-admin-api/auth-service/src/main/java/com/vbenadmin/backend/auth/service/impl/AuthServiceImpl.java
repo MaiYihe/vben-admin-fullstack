@@ -14,7 +14,6 @@ import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
 import com.vbenadmin.backend.auth.service.IAuthService;
-import com.vbenadmin.backend.auth.service.PermissionQueryService;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commoncore.models.others.jwt.TokenPayload;
 import com.vbenadmin.backend.commoncore.utils.JWTUtils;
@@ -22,6 +21,7 @@ import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
+import com.vbenadmin.backend.commonweb.security.UserContextHolder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ public class AuthServiceImpl implements IAuthService {
     @DubboReference
     private IUserRpcService userRpcService;
 
-    private final PermissionQueryService permissionQueryService;
     private final RedisUtils redisUtils;
 
     public static final long ACCESS_EXPIRE = 30 * 60; // 30 min，单位秒
@@ -46,9 +45,6 @@ public class AuthServiceImpl implements IAuthService {
 
         public static String refreshTokenStore(String jti) {
             return REFRESH_TOKEN_PREFIX + jti;
-        }
-
-        private RedisKeys() {
         }
     }
 
@@ -122,11 +118,11 @@ public class AuthServiceImpl implements IAuthService {
         Object uid = claims.get("userId");
         String userId = uid != null ? uid.toString() : null;
 
-        // 查询得到 accessCodes
-        List<String> accessCodes = permissionQueryService.getAuthCodes(userId);
+        // 查询得到 authCodes
+        List<String> authCodes = userRpcService.getAuthCodesByUserId(userId);
 
-        // 返回新的 Access Token
-        return createAccessToken(userId, accessCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
+        // 返回新的 AccessToken
+        return createAccessToken(userId, authCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
     }
 
     @Override
@@ -138,12 +134,14 @@ public class AuthServiceImpl implements IAuthService {
 
         String jti = (String) claims.get("jti");
         boolean deleted = redisUtils.delete(RedisKeys.refreshTokenStore(jti)); // 可能 Redis 自动过期，导致删除失败了，但是不重要
-        log.info("Logout: refreshToken jti={}, deleted={}", jti, deleted);
+        log.debug("Logout: refreshToken jti={}, deleted={}", jti, deleted);
     }
 
     @Override
-    public List<String> getAuthCodes(String userId) {
-        return permissionQueryService.getAuthCodes(userId);
+    public List<String> getAuthCodes() {
+        return UserContextHolder.get().getAuthCodes()
+            .stream()
+            .toList();
     }
 
     // 生成出 JWT RefreshToken
@@ -176,7 +174,7 @@ public class AuthServiceImpl implements IAuthService {
     // 生成 tokenPair（含 refreshToken 写入 Redis 逻辑）
     private TokenPairDTO generateTokenPair(String userId) {
         String authJti = UUID.randomUUID().toString();
-        List<String> authCodes = permissionQueryService.getAuthCodes(userId);
+        List<String> authCodes = userRpcService.getAuthCodesByUserId(userId);
         String authToken = createAccessToken(userId, authCodes, ACCESS_EXPIRE, authJti);
 
         String refreshJti = UUID.randomUUID().toString();

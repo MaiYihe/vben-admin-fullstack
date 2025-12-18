@@ -65,5 +65,5 @@ public interface IAuthService {
      * 根据 userId 查询得到角色->权限 **（sql 数据库操作）**
      * @return
      */
-    List<String> getAuthCodes(String userId);
+    List<String> getAuthCodes();
 }

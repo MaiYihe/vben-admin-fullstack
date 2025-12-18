@@ -19,6 +19,8 @@ import com.vbenadmin.backend.user.models.vo.UserProfileVO;
  * @since 2025-11-06
  */
 public interface IUserService extends IService<User> {
+    List<String> getAuthCodesByUserId(String userId);
+
     UserInfoDTO getUserInfoByUserName(String username);
     boolean existUser(String username);
     User createUser(UserCreateRequest userCreateRequest);

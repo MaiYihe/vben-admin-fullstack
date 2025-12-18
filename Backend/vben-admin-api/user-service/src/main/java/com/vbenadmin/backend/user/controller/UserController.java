@@ -22,6 +22,7 @@ public class UserController {
 
     private final IUserService userService;
 
+    @GetMapping("/info")
     public ResponseEntity<ApiResponse<UserProfileVO>> getUserProfile() {
         UserProfileVO vo = userService.getUserProfile();
         return ResponseEntity.ok(ApiResponse.success(vo));

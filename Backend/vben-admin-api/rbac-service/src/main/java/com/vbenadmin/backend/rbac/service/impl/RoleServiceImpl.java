@@ -1,8 +1,5 @@
 package com.vbenadmin.backend.rbac.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,28 +20,4 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
-    private final RoleMapper roleMapper;
-
-    @Override
-    public List<String> getRoleIdsByUserId(String userId) {
-        List<String> roleIds = roleMapper.selectRoleIdsByUserId(userId);
-
-        if(roleIds.isEmpty()){
-            return Collections.emptyList();
-        }
-
-        return roleIds;
-    }
-
-    @Override
-    public List<String> getRoleNamesByUserId(String userId) {
-        List<String> roleNames = roleMapper.selectRoleNamesByUserId(userId);
-
-        if(roleNames.isEmpty()){
-            return Collections.emptyList();
-        }
-
-        return roleNames;
-    }
-
 }

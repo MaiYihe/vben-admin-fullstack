@@ -1,11 +1,5 @@
 package com.vbenadmin.backend.rbac.mapper;
 
-
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vbenadmin.backend.rbac.entity.Role;
 
@@ -20,10 +14,5 @@ import com.vbenadmin.backend.rbac.entity.Role;
  * @since 2025-12-08
  */
 public interface RoleMapper extends BaseMapper<Role> {
-
-    @Select("SELECT role_id FROM sys_user_role WHERE user_id = #{userId}")
-    List<String> selectRoleIdsByUserId(@Param("userId") String userId);
-
-    List<String> selectRoleNamesByUserId(@Param("userId") String userId);
 }
 

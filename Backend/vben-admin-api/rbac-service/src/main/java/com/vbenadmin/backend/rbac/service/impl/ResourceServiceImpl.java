@@ -1,8 +1,5 @@
 package com.vbenadmin.backend.rbac.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,17 +20,4 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> implements IResourceService {
-
-    private final ResourceMapper resourceMapper;
-
-    @Override
-    public List<String> getAuthCodesByRoleIds(List<String> roleIds){
-        List<String> authCodes = resourceMapper.selectAuthCodesByRoleIds(roleIds);
-
-        if(authCodes.isEmpty()){
-            return Collections.emptyList();
-        }
-
-        return authCodes;
-    }
 }

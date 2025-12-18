@@ -1,98 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vbenadmin.backend.user.mapper.UserMapper">
-    <select id="selectUserListByRequest" resultMap="userInfoResultMap">
+    <select id="selectUserRolesByUserIds" resultType="com.vbenadmin.backend.user.models.dto.UserRoleDTO">
         SELECT 
-            u.id, 
-            u.avatar, 
-            u.username, 
-            u.real_name, 
-            u.status, 
-            u.create_time, 
-            u.description
-        FROM sys_user u
-        WHERE 1=1
-        <if test="request.username != null">AND u.username LIKE #{request.username}</if>
-        <if test="request.id != null">AND u.id = #{request.id}</if>
-        <if test="request.realName != null">AND u.real_name LIKE #{request.realName}</if>
-        <if test="request.status != null">AND u.status = #{request.status}</if>
-        <if test="request.remark != null">AND u.description LIKE #{request.remark}</if>
-        <if test="request.startTime != null">AND u.create_time &gt;= #{request.startTime}</if>
-        <if test="request.endTime != null">AND u.create_time &lt;= #{request.endTime}</if>
+        ur.user_id AS userId,
+        r.name AS roleName
+        FROM sys_user_role ur 
+        JOIN sys_role r ON ur.role_id = r.id 
+        WHERE ur.user_id IN 
+        <foreach collection="userIds"
+            item="userId"
+            open="("
+            separator=","
+            close=")">
+            #{userId}
+        </foreach>
     </select>
 
-        <!-- ===================== COUNT 查询（分页必须） ===================== -->
-    <select id="selectUserListByRequestCount" resultType="long">
-        SELECT COUNT(*)
-        FROM sys_user u
-        WHERE 1 = 1
-
-        <if test="request.username != null and request.username != ''">
-            AND u.username LIKE CONCAT('%', #{request.username}, '%')
-        </if>
-
-        <if test="request.id != null and request.id != ''">
-            AND u.id = #{request.id}
-        </if>
-
-        <if test="request.realName != null and request.realName != ''">
-            AND u.real_name LIKE CONCAT('%', #{request.realName}, '%')
-        </if>
-
-        <if test="request.status != null">
-            AND u.status = #{request.status}
-        </if>
-
-        <if test="request.remark != null and request.remark != ''">
-            AND u.description LIKE CONCAT('%', #{request.remark}, '%')
-        </if>
-
-        <if test="request.startTime != null">
-            AND u.create_time <![CDATA[ >= ]]> #{request.startTime}
-        </if>
-
-        <if test="request.endTime != null">
-            AND u.create_time <![CDATA[ <= ]]> #{request.endTime}
-        </if>
-
-    </select>
-
-
-
-    <resultMap id="userInfoResultMap"
-               type="com.vbenadmin.backend.user.models.vo.UserInfoVO">
-        <id     property="id"         column="id"/>
-        <result property="avatar"     column="avatar"/>
-        <result property="username"   column="username"/>
-        <result property="realName"   column="real_name"/>
-        <result property="status"     column="status"/>
-        <result property="createTime" column="create_time"/>
-        <result property="remark"     column="description"/>
-
-        <!-- 一对多：分步查询 -->
-        <collection property="roles"
-                    ofType="java.lang.String"
-                    column="id"
-                    select="selectRolesByUserId"/>
-
-        <collection property="groups"
-                    ofType="java.lang.String"
-                    column="id"
-                    select="selectGroupsByUserId"/>
-    </resultMap>
-
-    <select id="selectRolesByUserId" resultType="string">
-        SELECT r.role_name
-        FROM sys_user_role ur
-        JOIN sys_role r ON ur.role_id = r.id
-        WHERE ur.user_id = #{id}
-    </select>
-
-    <select id="selectGroupsByUserId" resultType="string">
-        SELECT g.group_name
-        FROM sys_user_group ug
+    <select id="selectUserGroupsByUserIds" resultType="com.vbenadmin.backend.user.models.dto.UserGroupDTO">
+        SELECT 
+        ug.user_id AS userId,
+        g.name AS groupName
+        FROM sys_user_group ug 
         JOIN sys_group g ON ug.group_id = g.id
-        WHERE ug.user_id = #{id}
+        WHERE ug.user_id IN 
+        <foreach collection="userIds"
+            item="userId"
+            open="("
+            separator=","
+            close=")">
+            #{userId}
+        </foreach>
     </select>
-
 </mapper>

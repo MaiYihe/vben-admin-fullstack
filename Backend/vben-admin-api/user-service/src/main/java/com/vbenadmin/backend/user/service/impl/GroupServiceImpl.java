@@ -1,14 +1,13 @@
 package com.vbenadmin.backend.user.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.user.entity.Group;
 import com.vbenadmin.backend.user.mapper.GroupMapper;
-import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
 import com.vbenadmin.backend.user.service.IGroupService;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 /**
  * <p>
@@ -19,12 +18,6 @@ import org.springframework.stereotype.Service;
  * @since 2025-12-17
  */
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
-
-    @Override
-    public List<UserGroupDTO> getGroupsByUserIds(List<String> userIds) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGroupsByUserIds'");
-    }
-
 }

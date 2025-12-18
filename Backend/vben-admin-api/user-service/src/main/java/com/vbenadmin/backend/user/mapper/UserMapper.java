@@ -1,15 +1,15 @@
 package com.vbenadmin.backend.user.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.models.dto.LoginUserDTO;
-import com.vbenadmin.backend.user.models.request.UserQueryRequest;
-import com.vbenadmin.backend.user.models.vo.UserInfoVO;
+import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
+import com.vbenadmin.backend.user.models.dto.UserRoleDTO;
 
 /**
  * <p>
@@ -20,6 +20,25 @@ import com.vbenadmin.backend.user.models.vo.UserInfoVO;
  * @since 2025-11-06
  */
 public interface UserMapper extends BaseMapper<User> {
+
+    @Select("""
+            SELECT DISTINCT res.auth_code
+            FROM sys_user_role ur
+            JOIN sys_role_resource rr ON ur.role_id = rr.role_id
+            JOIN sys_resource res ON rr.resource_id = res.id
+            WHERE ur.user_id = #{userId}
+              AND res.auth_code IS NOT NULL;
+            """)
+    List<String> getAuthCodesByUserId(@Param("userId")String userId);
+
+    @Select("""
+            SELECT r.name
+                FROM sys_user_role ur
+                JOIN sys_role r ON ur.role_id = r.id
+                WHERE ur.user_id = #{userId}
+            """)
+    List<String> getRoleNamesByUserId(@Param("userId") String userId);
+
     @Select("""
             SELECT
                 id,
@@ -32,6 +51,8 @@ public interface UserMapper extends BaseMapper<User> {
             """)
     LoginUserDTO selectCurrentLoginUser(@Param("userId") String userId);
 
-    // 查询用户信息及其角色和用户组，并分页
-    IPage<UserInfoVO> selectUserListByRequest(Page<?> page, @Param("request") UserQueryRequest request);
+
+    List<UserRoleDTO> selectUserRolesByUserIds(@Param("userIds") List<String> userIds);
+
+    List<UserGroupDTO> selectUserGroupsByUserIds(@Param("userIds") List<String> userIds);
 }

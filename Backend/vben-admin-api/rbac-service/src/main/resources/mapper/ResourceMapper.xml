@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vbenadmin.backend.rbac.mapper.ResourceMapper">
-
-    <select id="selectAuthCodesByRoleIds" resultType="java.lang.String"> 
-        SELECT DISTINCT re.auth_code
-        FROM sys_role_resource rr 
-        JOIN sys_resource re ON re.id = rr.resource_id
-        WHERE rr.role_id IN 
-        <foreach collection="roleIds"
-            item="roleId"
-            open="("
-            separator=","
-            close=")">
-            #{roleId}
-        </foreach>
-        AND re.auth_code IS NOT NULL
-    </select>
-
 </mapper>

@@ -1,5 +1,7 @@
 package com.vbenadmin.backend.user.rpcImpl;
 
+import java.util.List;
+
 import org.apache.dubbo.config.annotation.DubboService;
 
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
@@ -16,6 +18,11 @@ public class UserRpcServiceImpl implements IUserRpcService {
     private final IUserService userService;
 
     @Override
+    public List<String> getAuthCodesByUserId(String userId) {
+        return userService.getAuthCodesByUserId(userId);
+    }
+
+    @Override
     public UserInfoDTO getUserInfoByUserName(String username) {
         return userService.getUserInfoByUserName(username);
     }
@@ -30,4 +37,5 @@ public class UserRpcServiceImpl implements IUserRpcService {
         User user = userService.createUser(userCreateRequest);
         return user.getId();
     }
+
 }

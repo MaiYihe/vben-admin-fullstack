@@ -1,7 +1,5 @@
 package com.vbenadmin.backend.rbac.service;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.rbac.entity.Role;
 
@@ -14,6 +12,4 @@ import com.vbenadmin.backend.rbac.entity.Role;
  * @since 2025-12-08
  */
 public interface IRoleService extends IService<Role> {
-    List<String> getRoleIdsByUserId(String userId);
-    List<String> getRoleNamesByUserId(String userId);
 }
