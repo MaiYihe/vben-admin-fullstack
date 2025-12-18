@@ -31,7 +31,6 @@ public class Resource implements Serializable {
      */
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
-
     /**
      * 父级ID
      */

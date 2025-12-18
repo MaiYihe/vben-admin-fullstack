@@ -30,7 +30,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public List<String> getAuthCodesByRoleIds(List<String> roleIds){
         List<String> authCodes = resourceMapper.selectAuthCodesByRoleIds(roleIds);
 
-        if(authCodes == null || authCodes.isEmpty()){
+        if(authCodes.isEmpty()){
             return Collections.emptyList();
         }
 

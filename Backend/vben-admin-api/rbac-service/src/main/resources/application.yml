@@ -13,7 +13,7 @@ spring:
 
 dubbo:
   application:
-    name: rbac-service
+    name: rbac-service-dubbo
     qos-enable: false
   registry:
     address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
