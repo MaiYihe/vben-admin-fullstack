@@ -26,5 +26,7 @@ public interface IUserService extends IService<User> {
     User createUser(UserCreateRequest userCreateRequest);
 
     UserProfileVO getUserProfile();
+
     List<UserInfoVO> getUserListByRequest(UserQueryRequest request);
+    List<UserInfoVO> getAllUserList();
 }

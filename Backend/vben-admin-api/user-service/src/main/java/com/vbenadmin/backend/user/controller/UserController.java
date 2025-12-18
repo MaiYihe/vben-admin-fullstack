@@ -33,4 +33,10 @@ public class UserController {
         List<UserInfoVO> voList = userService.getUserListByRequest(request);
         return ResponseEntity.ok(ApiResponse.success(voList));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<UserInfoVO>>> getAllUserList(){
+        List<UserInfoVO> voList = userService.getAllUserList();
+        return ResponseEntity.ok(ApiResponse.success(voList));
+    }
 }

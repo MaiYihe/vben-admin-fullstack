@@ -143,6 +143,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (users.isEmpty()) {
             return List.of();
         }
+        RoleGroupContext ctx = getRoleGroupCtx(users);
+        return userInfoVOConverter.toVOList(users, ctx);
+    }
+
+    @Override
+    public List<UserInfoVO> getAllUserList() {
+        List<User> users = userMapper.selectList(null);
+        if (users.isEmpty()) {
+            return List.of();
+        }
+        RoleGroupContext ctx = getRoleGroupCtx(users);
+        return userInfoVOConverter.toVOList(users, ctx);
+    }
+
+    // 查询到角色-用户组上下文，方便映射到 UserInfoVO
+    private RoleGroupContext getRoleGroupCtx(List<User> users) {
         // 拿到 userIds，从而去其他表寻找关联字段
         List<String> userIds = users.stream()
                 .map(User::getId)
@@ -166,12 +182,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                                 UserGroupDTO::getGroupName,
                                 Collectors.toList())));
 
-        RoleGroupContext ctx = new RoleGroupContext(roleMap, groupMap);
-        return userInfoVOConverter.toVOList(users, ctx);
+        return new RoleGroupContext(roleMap, groupMap);
     }
 
-    @Override
-    }
-
-    
 }
