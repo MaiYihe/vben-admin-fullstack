@@ -16,7 +16,7 @@ public class UserQueryRequest {
     private String username;
     private String id;
     private String realName;
-    private Integer status;
+    private Byte status;
 
     private String roles;
     private String groups;
