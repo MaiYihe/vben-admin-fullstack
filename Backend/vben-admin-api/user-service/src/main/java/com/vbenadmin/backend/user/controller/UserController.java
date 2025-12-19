@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
+import com.vbenadmin.backend.user.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
@@ -49,6 +50,12 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> updateUser(@PathVariable("id") String id,
             @RequestBody UserUpdateRequest request) {
         userService.updateUser(id, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/system/user")
+    public ResponseEntity<ApiResponse<UserInfoVO>> createUser(@RequestBody UserCreateRequest request) {
+        userService.createUser(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

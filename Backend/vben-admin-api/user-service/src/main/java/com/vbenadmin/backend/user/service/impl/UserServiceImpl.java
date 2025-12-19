@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.commonweb.context.UserContext;
 import com.vbenadmin.backend.commonweb.security.UserContextHolder;
+import com.vbenadmin.backend.user.converter.UserConverter;
 import com.vbenadmin.backend.user.converter.UserInfoDTOConverter;
 import com.vbenadmin.backend.user.converter.UserInfoVOConverter;
 import com.vbenadmin.backend.user.converter.UserProfileVOConverter;
@@ -29,6 +32,7 @@ import com.vbenadmin.backend.user.mapper.UserMapper;
 import com.vbenadmin.backend.user.models.dto.LoginUserDTO;
 import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
 import com.vbenadmin.backend.user.models.dto.UserRoleDTO;
+import com.vbenadmin.backend.user.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
@@ -55,6 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final UserMapper userMapper;
     private final UserInfoVOConverter userInfoVOConverter;
     private final UserInfoDTOConverter userInfoDTOConverter;
+    private final UserConverter userConverter;
 
     @Override
     public List<String> getAuthCodesByUserId(String userId) {
@@ -191,11 +196,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void updateUser(String userId, UserUpdateRequest request) {
         if (userId == null)
-            throw new BizException(40401, "userId 为空，无法更新");
+            throw new BizException(40000, "userId 为空，无法更新");
 
         User user = this.getById(userId);
         if (user == null)
-            throw new BizException(40404, "用户不存在");
+            throw new BizException(40401, "用户不存在");
 
         log.debug("尝试更新 userId 为 {} 的用户", userId);
         LambdaUpdateWrapper<User> uw = Wrappers.lambdaUpdate(User.class)
@@ -206,7 +211,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .set(request.getRemark() != null, User::getDescription, request.getRemark());
 
         boolean updated = this.update(uw);
-        if(!updated) throw new BizException(50001, "用户信息更新失败");
+        if (!updated)
+            throw new BizException(50001, "用户信息更新失败");
+    }
+
+    @Override
+    public void createUser(UserCreateRequest userCreateRequest) {
+        if (userCreateRequest == null)
+            throw new BizException(40000, "创建请求为空");
+
+        if (userCreateRequest.getUsername() == null)
+            throw new BizException(40000, "创建请求中没有用户名");
+
+        if (existUser(userCreateRequest.getUsername()))
+            throw new BizException(40901, "用户已存在");
+
+        User user = userConverter.toEntity(userCreateRequest);
+
+        // 管理员创建用户：给一个默认密码
+        String defaultPassword = "123456";
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(defaultPassword));
+
+        boolean saved = this.save(user);
+
+        if (!saved)
+            throw new BizException(50001, "创建失败，未知错误");
     }
 
 }

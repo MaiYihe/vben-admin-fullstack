@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
 import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.user.entity.User;
+import com.vbenadmin.backend.user.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
@@ -35,4 +36,6 @@ public interface IUserService extends IService<User> {
     List<UserInfoVO> getAllUserList();
 
     void updateUser(String userId, UserUpdateRequest request);
+
+    void createUser(UserCreateRequest userCreateRequest);
 }
