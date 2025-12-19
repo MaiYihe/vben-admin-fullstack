@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
@@ -28,6 +30,7 @@ import com.vbenadmin.backend.user.models.dto.LoginUserDTO;
 import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
 import com.vbenadmin.backend.user.models.dto.UserRoleDTO;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
+import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 import com.vbenadmin.backend.user.models.vo.UserProfileVO;
 import com.vbenadmin.backend.user.service.IUserService;
@@ -183,6 +186,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                                 Collectors.toList())));
 
         return new RoleGroupContext(roleMap, groupMap);
+    }
+
+    @Override
+    public void updateUser(String userId, UserUpdateRequest request) {
+        if (userId == null)
+            throw new BizException(40401, "userId 为空，无法更新");
+
+        User user = this.getById(userId);
+        if (user == null)
+            throw new BizException(40404, "用户不存在");
+
+        log.debug("尝试更新 userId 为 {} 的用户", userId);
+        LambdaUpdateWrapper<User> uw = Wrappers.lambdaUpdate(User.class)
+                .eq(User::getId, userId)
+                .set(request.getUsername() != null, User::getUsername, request.getUsername())
+                .set(request.getRealName() != null, User::getRealName, request.getRealName())
+                .set(request.getStatus() != null, User::getStatus, request.getStatus())
+                .set(request.getRemark() != null, User::getDescription, request.getRemark());
+
+        boolean updated = this.update(uw);
+        if(!updated) throw new BizException(50001, "用户信息更新失败");
     }
 
 }
