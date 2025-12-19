@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
-import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
@@ -26,7 +26,7 @@ public interface IUserService extends IService<User> {
 
     boolean existUser(String username);
 
-    User createUser(UserCreateRequest userCreateRequest);
+    User registerUser(UserRegisterRequest userRegisterRequest);// 直接注册用户
 
     UserProfileVO getUserProfile();
 

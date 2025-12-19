@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
-import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.service.IUserService;
@@ -33,8 +33,8 @@ public class UserRpcServiceImpl implements IUserRpcService {
     }
 
     @Override
-    public String createUser(UserCreateRequest userCreateRequest) {
-        User user = userService.createUser(userCreateRequest);
+    public String registerUser(UserRegisterRequest registerRequest) {
+        User user = userService.registerUser(registerRequest);
         return user.getId();
     }
 

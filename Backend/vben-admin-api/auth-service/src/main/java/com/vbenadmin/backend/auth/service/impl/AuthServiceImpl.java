@@ -19,7 +19,7 @@ import com.vbenadmin.backend.commoncore.models.others.jwt.TokenPayload;
 import com.vbenadmin.backend.commoncore.utils.JWTUtils;
 import com.vbenadmin.backend.commoncore.utils.RedisUtils;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
-import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.commonrpc.rpc.IUserRpcService;
 import com.vbenadmin.backend.commonweb.security.UserContextHolder;
 
@@ -89,8 +89,8 @@ public class AuthServiceImpl implements IAuthService {
         String hashedPassword = encoder.encode(request.getPassword());
 
         // 把用户名和密码一起写入数据库
-        UserCreateRequest userCreateRequest = new UserCreateRequest(username, hashedPassword);
-        String userId = userRpcService.createUser(userCreateRequest);
+        UserRegisterRequest registerRequest = new UserRegisterRequest(username, hashedPassword);
+        String userId = userRpcService.registerUser(registerRequest);
 
         // 创建 TokenPairDTO
         return generateTokenPair(userId);

@@ -5,7 +5,7 @@ package com.vbenadmin.backend.commonrpc.rpc;
 import java.util.List;
 
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
-import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 
 
 public interface IUserRpcService {
@@ -15,6 +15,6 @@ public interface IUserRpcService {
 
     boolean existUser(String username);
 
-    String createUser(UserCreateRequest userCreateRequest);
+    String registerUser(UserRegisterRequest userRegisterRequest);
     
 }

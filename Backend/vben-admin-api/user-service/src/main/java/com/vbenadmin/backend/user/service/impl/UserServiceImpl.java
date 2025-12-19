@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonrpc.models.dto.UserInfoDTO;
-import com.vbenadmin.backend.commonrpc.models.request.UserCreateRequest;
+import com.vbenadmin.backend.commonrpc.models.request.UserRegisterRequest;
 import com.vbenadmin.backend.commonweb.context.UserContext;
 import com.vbenadmin.backend.commonweb.security.UserContextHolder;
 import com.vbenadmin.backend.user.converter.UserInfoDTOConverter;
@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public User createUser(UserCreateRequest userCreateRequest) {
+    public User registerUser(UserRegisterRequest userCreateRequest) {
         // 创建 User 实体
         User user = new User();
         user.setUsername(userCreateRequest.getUsername());
