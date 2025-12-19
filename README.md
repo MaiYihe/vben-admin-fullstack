@@ -20,22 +20,23 @@ pnpm run dev
 
 ## 后端（开发中）
 - 完整的微服务架构体系
+- JDK 17 + SpringBoot 3.x
 - Nacos 注册/配置中心
 - Dubbo RPC 内部通信
 - JWT_AuthToken + RefreshToken 的（双 Token）登录安全机制    
 - RBAC 菜单 + 权限码设计 
-- MapStruct 实现 POJO 相互映射
+- MapStruct 实现 POJO 等类的相互映射
 - Redis 维护登陆状态： (jti, userId)
     - JWT 机制允许多端登陆
 - mysql 本地数据库存储
 - mybatis-plus-generator 代码生成器
 
 - common-core/common-web/common-rpc 公告依赖模块
-    - common-core 的 RedisUtils，common-web 的 GlobalExceptionHandler、JwtContextFilter、AccessCheckAspect 等类自动装配
+    - common-core 的 RedisUtils，common-web 的 GlobalExceptionHandler、JwtContextFilter、AccessCheckAspect 等类实现自动配置
 - 双层状态码：HTTP 状态码、业务状态码（写在HTTP body）
 - SpringMVC 统一正常返回（`Controller + ApiResponse<T>`）
 - SpringMVC 统一异常处理（业务异常 `BizEeception`，全局异常处理封装为 `ApiResponse<T>`）    
-- 自定义鉴权 AOP（accessCodes 权限码粒度功能鉴权）
+- 自定义鉴权 AOP（authCodes 权限码粒度功能鉴权）
 - JWT 的 tokenPayload 保存权限信息，供微服务解析、查询、比对
 - 自定义 JWTUtils、RedisUtils 等工具类
     - JWTUtils 含以下功能：创建 JWT、验证 JWT（合法性与正确性）、解析 JWT 取出 TokenPayload
@@ -43,12 +44,16 @@ pnpm run dev
 - 自定义 JwtContextFilter，依赖 `common-web` 即自动配置
     - 将拦截 HTTP 请求并解析 JWT，将用户信息存入上下文
     - ThreadLocal 保证上下文生命周期与线程安全
-- gateway-service：路由、白名单、验证 token
+    - 白名单放行 `/auth/register` `/auth/login` `/auth/refresh`
+- gateway-service：请求 URI 预处理、路由、白名单、验证 accessToken
+    - 基于 Webflux
+    - URI 预处理：裁剪 `/api` 前缀
+    - 白名单放行 `/auth/register` `/auth/login` `/auth/refresh`
 - auth-service：
     - 注册、登录、登出、刷新 accessToken 、获取权限码 authCodes
     - BCrypt 密码加密存储
 - user-service：
-    - 查询用户相关信息（表单动态查询）
+    - 查询用户信息：用户画像、用户清单（分页查询、表单条件查询）
 
 
 > [!TIP] 项目使用 maven wrapper 构建与运行
