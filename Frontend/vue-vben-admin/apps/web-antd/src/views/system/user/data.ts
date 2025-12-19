@@ -9,7 +9,7 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'name',
+      fieldName: 'username',
       label: $t('system.user.username'),
       rules: 'required',
     },
