@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -27,6 +28,8 @@ import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 import com.vbenadmin.backend.user.service.ISystemUserService;
+import com.vbenadmin.backend.user.service.IUserGroupService;
+import com.vbenadmin.backend.user.service.IUserRoleService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +50,8 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
     private final UserMapper userMapper;
     private final UserInfoVOConverter userInfoVOConverter;
     private final UserConverter userConverter;
-
+    private final IUserGroupService userGroupService;
+    private final IUserRoleService userRoleService;
 
     @Override
     public List<UserInfoVO> getUserListByRequest(UserQueryRequest request) {
@@ -162,6 +166,36 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         return this.lambdaQuery()
                 .eq(User::getUsername, username)
                 .count() > 0;
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String userId) {
+        if (userId == null)
+            throw new BizException(40000, "未携带 userId");
+
+        User user = this.getById(userId);
+        if (user == null)
+            throw new BizException(40401, "用户不存在");
+
+        // 安全保护 1：禁止删超级管理员
+        if (user.getUsername() == "root") {
+            throw new BizException(40000, "不能删除超级管理员");
+        }
+
+        // 安全保护 2：只能删禁用用户（非常常见）
+        if (user.getStatus() == 1) {
+            throw new BizException(40000, "请先禁用用户，再进行删除");
+        }
+
+        // 级联清理（中间表）
+        userRoleService.removeByUserId(userId);
+        userGroupService.removeByUserId(userId);
+
+        boolean removed = this.removeById(userId);
+
+        if (!removed)
+            throw new BizException(50001, "删除用户失败，未知错误");
     }
 
 }

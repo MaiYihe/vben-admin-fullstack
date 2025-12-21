@@ -52,4 +52,10 @@ public class SystemUserController {
         userService.createUser(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable("id") String id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }

@@ -26,4 +26,6 @@ public interface ISystemUserService extends IService<User> {
     void updateUser(String userId, UserUpdateRequest request);
 
     void createUser(UserCreateRequest userCreateRequest);
+
+    void deleteUser(String userId);
 }
