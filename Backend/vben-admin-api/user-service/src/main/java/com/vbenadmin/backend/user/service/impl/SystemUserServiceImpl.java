@@ -30,7 +30,7 @@ import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 import com.vbenadmin.backend.user.service.ISystemUserService;
 import com.vbenadmin.backend.user.service.IUserGroupService;
-import com.vbenadmin.backend.user.service.IUserRoleService;
+import com.vbenadmin.backend.user.service.IUserDepartmentService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
     private final UserInfoVOConverter userInfoVOConverter;
     private final UserConverter userConverter;
     private final IUserGroupService userGroupService;
-    private final IUserRoleService userRoleService;
+    private final IUserDepartmentService userDepartmentService;
 
     @Override
     public PageResponseVO<UserInfoVO> getUserListByRequest(UserQueryRequest request) {
@@ -203,7 +203,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         }
 
         // 级联清理（中间表）
-        userRoleService.removeByUserId(userId);
+        userDepartmentService.removeByUserId(userId);
         userGroupService.removeByUserId(userId);
 
         boolean removed = this.removeById(userId);
