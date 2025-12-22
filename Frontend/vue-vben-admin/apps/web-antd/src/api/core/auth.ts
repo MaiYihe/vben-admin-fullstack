@@ -13,7 +13,7 @@ export namespace AuthApi {
   }
 
   export interface RefreshTokenResult {
-    data: string;
+    accessToken: string;
     // status: number;
   }
 }
