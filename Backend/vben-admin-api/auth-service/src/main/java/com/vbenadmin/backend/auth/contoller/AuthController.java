@@ -63,8 +63,8 @@ public class AuthController {
      * @return String accessToken
      */
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<String>> refresh(@CookieValue("refreshToken") String refreshToken) {
-        String token = authService.refreshToken(refreshToken);
+    public ResponseEntity<ApiResponse<TokenVO>> refresh(@CookieValue("refreshToken") String refreshToken) {
+        TokenVO token = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(ApiResponse.success(token));
     }
 

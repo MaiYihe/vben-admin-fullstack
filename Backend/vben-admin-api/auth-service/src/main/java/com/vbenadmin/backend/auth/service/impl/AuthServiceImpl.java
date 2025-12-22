@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
+import com.vbenadmin.backend.auth.models.vo.TokenVO;
 import com.vbenadmin.backend.auth.service.IAuthService;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commoncore.models.others.jwt.TokenPayload;
@@ -97,7 +98,7 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public String refreshToken(String refreshToken) {
+    public TokenVO refreshToken(String refreshToken) {
 
         // 调用 JWT 工具类验证
         Map<String, Object> claims = JWTUtils.checkToken(refreshToken);
@@ -122,7 +123,11 @@ public class AuthServiceImpl implements IAuthService {
         List<String> authCodes = userRpcService.getAuthCodesByUserId(userId);
 
         // 返回新的 AccessToken
-        return createAccessToken(userId, authCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
+        String accessToken = createAccessToken(userId, authCodes, ACCESS_EXPIRE, UUID.randomUUID().toString());
+
+        return TokenVO.builder()
+            .accessToken(accessToken)
+            .build();
     }
 
     @Override

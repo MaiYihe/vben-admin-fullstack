@@ -5,6 +5,7 @@ import java.util.List;
 import com.vbenadmin.backend.auth.models.dto.TokenPairDTO;
 import com.vbenadmin.backend.auth.models.request.LoginRequest;
 import com.vbenadmin.backend.auth.models.request.RegisterRequest;
+import com.vbenadmin.backend.auth.models.vo.TokenVO;
 
 public interface IAuthService {
     /**
@@ -47,7 +48,7 @@ public interface IAuthService {
      * @param refreshToken
      * @return Access Token
      */
-    String refreshToken(String refreshToken);
+    TokenVO refreshToken(String refreshToken);
 
     /**
      * 检查 refreshToken
