@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: department-service   # 服务名（注册到 Nacos 的名字）
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/vbenadmin?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+# dubbo:
+#   application:
+#     name: department-service-dubbo
+#     qos-enable: false # 关闭 qos 服务，会占用 22222 端口
+#   registry:
+#     address: nacos://127.0.0.1:8848 # 把地址改为 nacos 地址
+#   protocol:
+#     name: dubbo
+#     port: 20882
+
+server:
+  port: 8084
