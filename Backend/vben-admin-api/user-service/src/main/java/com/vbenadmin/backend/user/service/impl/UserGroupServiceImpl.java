@@ -1,11 +1,14 @@
 package com.vbenadmin.backend.user.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.user.mapper.UserGroupMapper;
 import com.vbenadmin.backend.user.service.IUserGroupService;
 
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class UserGroupServiceImpl implements IUserGroupService{
     
