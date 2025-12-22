@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
+import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
 import com.vbenadmin.backend.user.models.request.UserUpdateRequest;
@@ -29,9 +30,14 @@ public class SystemUserController {
     private final ISystemUserService userService;
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<List<UserInfoVO>>> getUserList(UserQueryRequest request) {
-        List<UserInfoVO> voList = userService.getUserListByRequest(request);
-        return ResponseEntity.ok(ApiResponse.success(voList));
+    public ResponseEntity<ApiResponse<PageResponseVO<UserInfoVO>>> getUserList(UserQueryRequest request) {
+        PageResponseVO<UserInfoVO> pageVO = userService.getUserListByRequest(request);
+        var response = ApiResponse.success(pageVO);
+
+        if(pageVO.getItems() == null)
+            response.setMessage("当前查询条件下找不到任何条目");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/all")

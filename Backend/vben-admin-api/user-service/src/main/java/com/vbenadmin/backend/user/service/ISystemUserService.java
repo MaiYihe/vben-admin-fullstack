@@ -3,6 +3,7 @@ package com.vbenadmin.backend.user.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.models.request.UserCreateRequest;
 import com.vbenadmin.backend.user.models.request.UserQueryRequest;
@@ -19,7 +20,7 @@ import com.vbenadmin.backend.user.models.vo.UserInfoVO;
  */
 public interface ISystemUserService extends IService<User> {
 
-    List<UserInfoVO> getUserListByRequest(UserQueryRequest request);
+    PageResponseVO<UserInfoVO> getUserListByRequest(UserQueryRequest request);
 
     List<UserInfoVO> getAllUserList();
 

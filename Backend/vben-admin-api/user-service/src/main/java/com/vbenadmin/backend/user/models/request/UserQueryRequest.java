@@ -1,6 +1,7 @@
 package com.vbenadmin.backend.user.models.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,8 +19,8 @@ public class UserQueryRequest {
     private String realName;
     private Byte status;
 
-    private String roles;
-    private String groups;
+    private List<String> roles;
+    private List<String> groups;
     private String remark;
 
     private LocalDateTime startTime;

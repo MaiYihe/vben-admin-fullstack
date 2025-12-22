@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
+import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.converter.UserConverter;
 import com.vbenadmin.backend.user.converter.UserInfoVOConverter;
 import com.vbenadmin.backend.user.converter.context.RoleGroupContext;
@@ -54,9 +55,9 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
     private final IUserRoleService userRoleService;
 
     @Override
-    public List<UserInfoVO> getUserListByRequest(UserQueryRequest request) {
+    public PageResponseVO<UserInfoVO> getUserListByRequest(UserQueryRequest request) {
 
-        // 1. 查询 List<User>
+        // 查询 List<User>
         // 分页查询，使用 MyBatis Plus 的分页功能
         Page<User> page = new Page<>(request.getPage(), request.getPageSize());
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>()
@@ -68,14 +69,27 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
                 .le(request.getEndTime() != null, User::getCreateTime, request.getEndTime())
                 .orderByDesc(User::getCreateTime);
 
+        // 扩展查询条件来连接角色和组
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            wrapper.in(User::getId, userMapper.selectUserIdsByRoles(request.getRoles()));
+        }
+        if (request.getGroups() != null && !request.getGroups().isEmpty()) {
+            wrapper.in(User::getId, userMapper.selectUserIdsByGroups(request.getGroups()));
+        }
+
+        // 关键：先根据 wrapper 筛选过滤，然后返回 page
         IPage<User> userPage = userMapper.selectPage(page, wrapper);
         List<User> users = userPage.getRecords();
 
         if (users.isEmpty()) {
-            return List.of();
+            return new PageResponseVO<>(null, 0);
         }
+
+        // MapStruct
         RoleGroupContext ctx = getRoleGroupCtx(users);
-        return userInfoVOConverter.toVOList(users, ctx);
+        List<UserInfoVO> userInfoVOs = userInfoVOConverter.toVOList(users, ctx);
+
+        return new PageResponseVO<UserInfoVO>(userInfoVOs, userPage.getTotal());
     }
 
     @Override
@@ -95,22 +109,22 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
                 .map(User::getId)
                 .toList();
 
-        // 2. 查询得到 roleMap
-        List<UserRoleDTO> roleRows = userMapper.selectUserRolesByUserIds(userIds);
-        Map<String, List<String>> roleMap = roleRows.stream()
-                .collect(Collectors.groupingBy(
-                        UserRoleDTO::getUserId,
-                        Collectors.mapping(
-                                UserRoleDTO::getRoleName,
-                                Collectors.toList())));
-
-        // 3. 查询得到 groupMap
+        // 2. 查询得到 groupMap
         List<UserGroupDTO> groupRows = userMapper.selectUserGroupsByUserIds(userIds);
         Map<String, List<String>> groupMap = groupRows.stream()
                 .collect(Collectors.groupingBy(
                         UserGroupDTO::getUserId,
                         Collectors.mapping(
                                 UserGroupDTO::getGroupName,
+                                Collectors.toList())));
+
+        // 3. 查询得到 roleMap
+        List<UserRoleDTO> roleRows = userMapper.selectUserRolesByUserIds(userIds);
+        Map<String, List<String>> roleMap = roleRows.stream()
+                .collect(Collectors.groupingBy(
+                        UserRoleDTO::getUserId,
+                        Collectors.mapping(
+                                UserRoleDTO::getRoleName,
                                 Collectors.toList())));
 
         return new RoleGroupContext(roleMap, groupMap);
