@@ -54,7 +54,7 @@ public class SystemUserController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserInfoVO>> createUser(@RequestBody UserCreateRequest request) {
+    public ResponseEntity<ApiResponse<Void>> createUser(@RequestBody UserCreateRequest request) {
         userService.createUser(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
