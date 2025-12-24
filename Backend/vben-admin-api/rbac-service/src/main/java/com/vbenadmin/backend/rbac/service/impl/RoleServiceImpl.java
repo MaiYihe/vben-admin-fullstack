@@ -57,6 +57,23 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             return new PageResponseVO<>(null, 0);
         }
 
+        RoleRelationContext ctx = getRoleRelationCtx(roles);
+
+        // MapStruct
+        List<RoleInfoVO> roleInfoVOs = roleInfoVOConverter.toVOList(roles, ctx);
+        return new PageResponseVO<RoleInfoVO>(roleInfoVOs, rolePage.getTotal());
+    }
+
+    @Override
+    public List<RoleInfoVO> getAllRoleList() {
+        List<Role> roles = this.list();
+        RoleRelationContext ctx = getRoleRelationCtx(roles);
+        List<RoleInfoVO> roleInfoVOs = roleInfoVOConverter.toVOList(roles, ctx);
+
+        return roleInfoVOs;
+    }
+
+    private RoleRelationContext getRoleRelationCtx(List<Role> roles) {
         // get roleRelation conext
         List<String> roleIds = roles.stream()
             .map(Role::getId)
@@ -70,10 +87,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
                             RolePermissionDTO::getPermission, 
                             Collectors.toList())));
         RoleRelationContext ctx = new RoleRelationContext(permissionMap);
-
-        // MapStruct
-        List<RoleInfoVO> roleInfoVOs = roleInfoVOConverter.toVOList(roles,ctx);
-        return new PageResponseVO<RoleInfoVO>(roleInfoVOs, rolePage.getTotal());
+        return ctx;
     }
 
 }

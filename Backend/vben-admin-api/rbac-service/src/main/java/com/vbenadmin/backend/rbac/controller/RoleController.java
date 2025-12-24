@@ -1,5 +1,7 @@
 package com.vbenadmin.backend.rbac.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,12 @@ public class RoleController {
             response.setMessage("当前查询条件下找不到任何条目");
 
         return ResponseEntity.ok(response);
+   }
+
+   @GetMapping("/all")
+   public ResponseEntity<ApiResponse<List<RoleInfoVO>>> getAllRoleList(){
+       List<RoleInfoVO> voList = roleService.getAllRoleList();
+       return ResponseEntity.ok(ApiResponse.success(voList));
    }
 
 }

@@ -1,5 +1,7 @@
 package com.vbenadmin.backend.rbac.service;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.rbac.entity.Role;
@@ -16,4 +18,6 @@ import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
  */
 public interface IRoleService extends IService<Role> {
     PageResponseVO<RoleInfoVO> getRoleListByRequest(RoleQueryRequest request);
+    
+    List<RoleInfoVO> getAllRoleList();
 }
