@@ -19,7 +19,7 @@ import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.converter.UserConverter;
 import com.vbenadmin.backend.user.converter.UserInfoVOConverter;
-import com.vbenadmin.backend.user.converter.context.RoleGroupContext;
+import com.vbenadmin.backend.user.converter.context.UserRelationContext;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.mapper.UserMapper;
 import com.vbenadmin.backend.user.models.dto.UserGroupDTO;
@@ -86,7 +86,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         }
 
         // MapStruct
-        RoleGroupContext ctx = getRoleGroupCtx(users);
+        UserRelationContext ctx = getUserRelationCtx(users);
         List<UserInfoVO> userInfoVOs = userInfoVOConverter.toVOList(users, ctx);
 
         return new PageResponseVO<UserInfoVO>(userInfoVOs, userPage.getTotal());
@@ -98,12 +98,12 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         if (users.isEmpty()) {
             return List.of();
         }
-        RoleGroupContext ctx = getRoleGroupCtx(users);
+        UserRelationContext ctx = getUserRelationCtx(users);
         return userInfoVOConverter.toVOList(users, ctx);
     }
 
     // 查询到角色-用户组上下文，方便映射到 UserInfoVO
-    private RoleGroupContext getRoleGroupCtx(List<User> users) {
+    private UserRelationContext getUserRelationCtx(List<User> users) {
         // 拿到 userIds，从而去其他表寻找关联字段
         List<String> userIds = users.stream()
                 .map(User::getId)
@@ -127,7 +127,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
                                 UserRoleDTO::getRoleName,
                                 Collectors.toList())));
 
-        return new RoleGroupContext(roleMap, groupMap);
+        return new UserRelationContext(roleMap, groupMap);
     }
 
     @Override

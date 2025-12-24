@@ -6,7 +6,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class RoleGroupContext {
+public class UserRelationContext {
     private final Map<String, List<String>> roleMap;
     private final Map<String, List<String>> groupMap;
 

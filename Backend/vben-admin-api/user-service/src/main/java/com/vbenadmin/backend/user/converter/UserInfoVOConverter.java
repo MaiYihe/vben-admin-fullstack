@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import com.vbenadmin.backend.user.converter.context.RoleGroupContext;
+import com.vbenadmin.backend.user.converter.context.UserRelationContext;
 import com.vbenadmin.backend.user.entity.User;
 import com.vbenadmin.backend.user.models.vo.UserInfoVO;
 
@@ -19,10 +19,10 @@ public interface UserInfoVOConverter {
     @Mapping(target = "groups", expression = "java(ctx.getGroups(user.getId()))")
     UserInfoVO toVO(
             User user,
-            @Context RoleGroupContext ctx);
+            @Context UserRelationContext ctx);
 
     List<UserInfoVO> toVOList(
             List<User> users,
-            @Context RoleGroupContext ctx);
+            @Context UserRelationContext ctx);
 
 }
