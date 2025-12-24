@@ -26,6 +26,22 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--        @NotNull 等-->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!--  common-core 依赖-->
         <dependency>

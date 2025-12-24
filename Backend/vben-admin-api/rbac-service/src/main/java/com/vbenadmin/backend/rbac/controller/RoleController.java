@@ -1,0 +1,34 @@
+package com.vbenadmin.backend.rbac.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
+import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
+import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
+import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
+import com.vbenadmin.backend.rbac.service.IRoleService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/system/role")
+public class RoleController {
+
+    private final IRoleService roleService;
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<PageResponseVO<RoleInfoVO>>> getRoleList(RoleQueryRequest request){
+        PageResponseVO<RoleInfoVO> pageVO = roleService.getRoleListByRequest(request);
+        var response = ApiResponse.success(pageVO);
+
+        if(pageVO.getItems() == null)
+            response.setMessage("当前查询条件下找不到任何条目");
+
+        return ResponseEntity.ok(response);
+   }
+
+}
