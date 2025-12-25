@@ -18,7 +18,9 @@ import com.vbenadmin.backend.rbac.entity.RoleResource;
  */
 public interface RoleResourceMapper extends BaseMapper<RoleResource> {
 
-    void insertByAuthCodes(@Param("roleId") String roleId,@Param("authCodes") List<String> authCodes);
+    void insertByAuthCodes(
+            @Param("roleId") String roleId,
+            @Param("authCodes") List<String> authCodes);
 
 }
 

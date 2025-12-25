@@ -13,9 +13,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
-import com.vbenadmin.backend.rbac.controller.context.RoleRelationContext;
 import com.vbenadmin.backend.rbac.converter.RoleConverter;
 import com.vbenadmin.backend.rbac.converter.RoleInfoVOConverter;
+import com.vbenadmin.backend.rbac.converter.context.RoleRelationContext;
 import com.vbenadmin.backend.rbac.entity.Role;
 import com.vbenadmin.backend.rbac.mapper.RoleMapper;
 import com.vbenadmin.backend.rbac.models.dto.RolePermissionDTO;
@@ -100,12 +100,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     @Transactional
     public void createRole(RoleCreateRequest roleCreateRequest) {
-        if (roleCreateRequest == null)
-            throw new BizException(40000, "创建请求为空");
-
-        if (roleCreateRequest.getName() == null)
-            throw new BizException(40000, "创建请求中没有角色名");
-
         if (existRole(roleCreateRequest.getName()))
             throw new BizException(40901, "角色已存在");
         

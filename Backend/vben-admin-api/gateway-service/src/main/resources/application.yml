@@ -19,6 +19,12 @@ spring:
             - Path=/api/user/**, /api/system/user/**
           filters:
             - StripPrefix=1
+        - id: rbac_route 
+          uri: lb://rbac-service
+          predicates:
+            - Path=/api/system/role/**, /api/system/resource/**
+          filters:
+            - StripPrefix=1
 
 # ✅ 自定义安全白名单配置（用于 GlobalFilter）
 secure:

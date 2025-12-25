@@ -1,8 +1,9 @@
 package com.vbenadmin.backend.rbac.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -25,12 +26,10 @@ public class RoleResource implements Serializable {
     /**
      * 角色ID
      */
-    @TableId("role_id")
     private String roleId;
 
     /**
      * 资源节点ID
      */
-    @TableId("resource_id")
     private String resourceId;
 }

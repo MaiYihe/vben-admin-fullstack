@@ -70,11 +70,13 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!--    mybatis-plus -->
+        <!--  common-infra依赖-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>com.vbenadmin.backend</groupId>
+            <artifactId>common-infra</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
 
         <dependency>
             <groupId>junit</groupId>

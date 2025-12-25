@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vbenadmin.backend.rbac.mapper.RoleResourceMapper">
     <insert id="insertByAuthCodes">
-        INSERT INTO sys_role_resource (role_id,resouce_id)
+        INSERT INTO sys_role_resource (role_id, resource_id)
         SELECT 
             #{roleId},
             re.id

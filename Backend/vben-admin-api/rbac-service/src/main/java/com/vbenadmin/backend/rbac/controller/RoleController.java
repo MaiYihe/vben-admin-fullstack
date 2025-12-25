@@ -16,6 +16,7 @@ import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 import com.vbenadmin.backend.rbac.service.IRoleService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,7 +27,7 @@ public class RoleController {
     private final IRoleService roleService;
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<PageResponseVO<RoleInfoVO>>> getRoleList(RoleQueryRequest request){
+    public ResponseEntity<ApiResponse<PageResponseVO<RoleInfoVO>>> getRoleList(@Valid RoleQueryRequest request){
         PageResponseVO<RoleInfoVO> pageVO = roleService.getRoleListByRequest(request);
         var response = ApiResponse.success(pageVO);
 
@@ -43,7 +44,7 @@ public class RoleController {
    }
 
    @PostMapping
-   public ResponseEntity<ApiResponse<Void>> createRole(@RequestBody RoleCreateRequest roleCreateRequest){
+   public ResponseEntity<ApiResponse<Void>> createRole(@Valid @RequestBody RoleCreateRequest roleCreateRequest){
        roleService.createRole(roleCreateRequest);
        return ResponseEntity.ok(ApiResponse.success(null));
    }

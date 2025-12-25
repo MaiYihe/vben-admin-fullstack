@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import com.vbenadmin.backend.rbac.controller.context.RoleRelationContext;
+import com.vbenadmin.backend.rbac.converter.context.RoleRelationContext;
 import com.vbenadmin.backend.rbac.entity.Role;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 

@@ -40,12 +40,6 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!--    mybatis-plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
-
         <!--  common-core依赖-->
         <dependency>
             <groupId>com.vbenadmin.backend</groupId>
@@ -64,6 +58,13 @@
         <dependency>
             <groupId>com.vbenadmin.backend</groupId>
             <artifactId>common-rpc</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!--  common-infra依赖-->
+        <dependency>
+            <groupId>com.vbenadmin.backend</groupId>
+            <artifactId>common-infra</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
