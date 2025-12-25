@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
+import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 import com.vbenadmin.backend.rbac.service.IRoleService;
@@ -37,6 +40,12 @@ public class RoleController {
    public ResponseEntity<ApiResponse<List<RoleInfoVO>>> getAllRoleList(){
        List<RoleInfoVO> voList = roleService.getAllRoleList();
        return ResponseEntity.ok(ApiResponse.success(voList));
+   }
+
+   @PostMapping
+   public ResponseEntity<ApiResponse<Void>> createRole(@RequestBody RoleCreateRequest roleCreateRequest){
+       roleService.createRole(roleCreateRequest);
+       return ResponseEntity.ok(ApiResponse.success(null));
    }
 
 }

@@ -5,19 +5,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.rbac.controller.context.RoleRelationContext;
+import com.vbenadmin.backend.rbac.converter.RoleConverter;
 import com.vbenadmin.backend.rbac.converter.RoleInfoVOConverter;
 import com.vbenadmin.backend.rbac.entity.Role;
 import com.vbenadmin.backend.rbac.mapper.RoleMapper;
 import com.vbenadmin.backend.rbac.models.dto.RolePermissionDTO;
+import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
+import com.vbenadmin.backend.rbac.service.IRoleResourceService;
 import com.vbenadmin.backend.rbac.service.IRoleService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +41,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     private final RoleMapper roleMapper;
     private final RoleInfoVOConverter roleInfoVOConverter;
+    private final RoleConverter roleConverter;
+    private final IRoleResourceService roleResourceService;
 
     @Override
     public PageResponseVO<RoleInfoVO> getRoleListByRequest(RoleQueryRequest request) {
@@ -76,18 +83,50 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     private RoleRelationContext getRoleRelationCtx(List<Role> roles) {
         // get roleRelation conext
         List<String> roleIds = roles.stream()
-            .map(Role::getId)
-            .toList();
-        List<RolePermissionDTO> permissionRows = roleMapper.selectRolePermissionsByRoleIds(roleIds); 
+                .map(Role::getId)
+                .toList();
+        List<RolePermissionDTO> permissionRows = roleMapper.selectRolePermissionsByRoleIds(roleIds);
 
-        Map<String,List<String>> permissionMap = permissionRows.stream()
-            .collect(Collectors.groupingBy(
+        Map<String, List<String>> permissionMap = permissionRows.stream()
+                .collect(Collectors.groupingBy(
                         RolePermissionDTO::getRoleId,
                         Collectors.mapping(
-                            RolePermissionDTO::getPermission, 
-                            Collectors.toList())));
+                                RolePermissionDTO::getPermission,
+                                Collectors.toList())));
         RoleRelationContext ctx = new RoleRelationContext(permissionMap);
         return ctx;
+    }
+
+    @Override
+    @Transactional
+    public void createRole(RoleCreateRequest roleCreateRequest) {
+        if (roleCreateRequest == null)
+            throw new BizException(40000, "创建请求为空");
+
+        if (roleCreateRequest.getName() == null)
+            throw new BizException(40000, "创建请求中没有角色名");
+
+        if (existRole(roleCreateRequest.getName()))
+            throw new BizException(40901, "角色已存在");
+        
+        // create role
+        Role role = roleConverter.toEntity(roleCreateRequest);
+        boolean saved = this.save(role);
+
+        if (!saved)
+            throw new BizException(50001, "创建失败，未知错误");
+
+        // add role-resource relations
+        if(roleCreateRequest.getPermissions() == null)
+            return;
+
+        roleResourceService.bindByAuthCodes(role.getId(),roleCreateRequest.getPermissions());
+    }
+
+    private boolean existRole(String roleName) {
+        return this.lambdaQuery()
+                .eq(Role::getName, roleName)
+                .count() > 0;
     }
 
 }

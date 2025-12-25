@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vbenadmin.backend.rbac.mapper.RoleResourceMapper">
+    <insert id="insertByAuthCodes">
+        INSERT INTO sys_role_resource (role_id,resouce_id)
+        SELECT 
+            #{roleId},
+            re.id
+        FROM sys_resource re 
+        WHERE re.auth_code IN
+        <foreach collection="authCodes" 
+            item="code"
+            open="(" separator="," close=")">
+            #{code}
+        </foreach>
+    </insert>
+</mapper>

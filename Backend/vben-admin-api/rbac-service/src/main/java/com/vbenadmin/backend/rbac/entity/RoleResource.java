@@ -1,4 +1,4 @@
-package com.vbenadmin.codegenerator.entity;
+package com.vbenadmin.backend.rbac.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
