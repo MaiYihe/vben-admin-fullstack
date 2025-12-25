@@ -102,7 +102,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public void createRole(RoleCreateRequest roleCreateRequest) {
         if (existRole(roleCreateRequest.getName()))
             throw new BizException(40901, "角色已存在");
-        
+
         // create role
         Role role = roleConverter.toEntity(roleCreateRequest);
         boolean saved = this.save(role);
@@ -111,10 +111,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             throw new BizException(50001, "创建失败，未知错误");
 
         // add role-resource relations
-        if(roleCreateRequest.getPermissions() == null)
+        if (roleCreateRequest.getPermissions() == null)
             return;
 
-        roleResourceService.bindByAuthCodes(role.getId(),roleCreateRequest.getPermissions());
+        roleResourceService.bindByAuthCodes(role.getId(), roleCreateRequest.getPermissions());
     }
 
     private boolean existRole(String roleName) {

@@ -22,5 +22,5 @@ public interface IRoleService extends IService<Role> {
     
     List<RoleInfoVO> getAllRoleList();
 
-    void createRole(RoleCreateRequest roleCreateRequest);
+    void createRole(RoleCreateRequest request);
 }

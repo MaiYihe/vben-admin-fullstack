@@ -7,6 +7,7 @@ import org.mapstruct.ReportingPolicy;
 import com.vbenadmin.backend.rbac.entity.Role;
 import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface RoleConverter {
     @Mapping(target = "id", ignore = true)

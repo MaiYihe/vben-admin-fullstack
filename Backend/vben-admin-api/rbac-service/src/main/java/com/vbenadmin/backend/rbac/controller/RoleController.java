@@ -27,26 +27,27 @@ public class RoleController {
     private final IRoleService roleService;
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<PageResponseVO<RoleInfoVO>>> getRoleList(@Valid RoleQueryRequest request){
+    public ResponseEntity<ApiResponse<PageResponseVO<RoleInfoVO>>> getRoleList(@Valid RoleQueryRequest request) {
         PageResponseVO<RoleInfoVO> pageVO = roleService.getRoleListByRequest(request);
         var response = ApiResponse.success(pageVO);
 
-        if(pageVO.getItems() == null)
+        if (pageVO.getItems() == null)
             response.setMessage("当前查询条件下找不到任何条目");
 
         return ResponseEntity.ok(response);
-   }
+    }
 
-   @GetMapping("/all")
-   public ResponseEntity<ApiResponse<List<RoleInfoVO>>> getAllRoleList(){
-       List<RoleInfoVO> voList = roleService.getAllRoleList();
-       return ResponseEntity.ok(ApiResponse.success(voList));
-   }
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<RoleInfoVO>>> getAllRoleList() {
+        List<RoleInfoVO> voList = roleService.getAllRoleList();
+        return ResponseEntity.ok(ApiResponse.success(voList));
+    }
 
-   @PostMapping
-   public ResponseEntity<ApiResponse<Void>> createRole(@Valid @RequestBody RoleCreateRequest roleCreateRequest){
-       roleService.createRole(roleCreateRequest);
-       return ResponseEntity.ok(ApiResponse.success(null));
-   }
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createRole(@Valid @RequestBody RoleCreateRequest roleCreateRequest) {
+        roleService.createRole(roleCreateRequest);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 
 }

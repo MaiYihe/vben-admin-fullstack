@@ -3,7 +3,6 @@ package com.vbenadmin.backend.auth.contoller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +20,7 @@ import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,7 +31,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenVO>> login(@Validated @RequestBody LoginRequest request,
+    public ResponseEntity<ApiResponse<TokenVO>> login(@Valid @RequestBody LoginRequest request,
             HttpServletResponse response) {
         TokenPairDTO tokenPair = authService.login(request);
 
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<TokenVO>> register(@Validated @RequestBody RegisterRequest request,
+    public ResponseEntity<ApiResponse<TokenVO>> register(@Valid @RequestBody RegisterRequest request,
             HttpServletResponse response) {
         TokenPairDTO tokenPair = authService.register(request);
 
