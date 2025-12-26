@@ -3,6 +3,7 @@ package com.vbenadmin.backend.rbac.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,12 @@ public class RoleController {
     public ResponseEntity<ApiResponse<Void>> updateRole(@PathVariable("id") String id,
             @Valid @RequestBody RoleUpdateRequest request) {
         roleService.updateRole(id, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable("id") String id){
+        roleService.deleteRole(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

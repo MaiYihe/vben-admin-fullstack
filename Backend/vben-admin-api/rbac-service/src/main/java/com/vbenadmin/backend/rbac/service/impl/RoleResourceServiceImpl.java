@@ -78,4 +78,10 @@ public class RoleResourceServiceImpl extends ServiceImpl<RoleResourceMapper, Rol
         return deleted || inserted;
     }
 
+    @Override
+    public boolean removeByRoleId(String roleId) {
+        int rowsAffected = roleResourceMapper.deleteByRoleId(roleId);
+        return rowsAffected > 0;
+    }
+
 }

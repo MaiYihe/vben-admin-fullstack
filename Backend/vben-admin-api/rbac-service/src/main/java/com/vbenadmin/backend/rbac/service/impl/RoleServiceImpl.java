@@ -25,6 +25,7 @@ import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleUpdateRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
+import com.vbenadmin.backend.rbac.service.IGroupRoleService;
 import com.vbenadmin.backend.rbac.service.IRoleResourceService;
 import com.vbenadmin.backend.rbac.service.IRoleService;
 
@@ -48,6 +49,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     private final RoleInfoVOConverter roleInfoVOConverter;
     private final RoleConverter roleConverter;
     private final IRoleResourceService roleResourceService;
+    private final IGroupRoleService groupRoleService;
 
     @Override
     public PageResponseVO<RoleInfoVO> getRoleListByRequest(RoleQueryRequest request) {
@@ -154,6 +156,25 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         if (!roleUpdated && !roleResourceUpdated)
             throw new BizException(50001, "角色信息更新失败，数据没有发生变化");
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteRole(String roleId) {
+        if(roleId == null)
+            throw new BizException(40000, "未修带 roleId");
+
+        Role role = this.getById(roleId);
+
+        if(role.getStatus() == 1)
+            throw new BizException(40000, "请先禁用角色，再进行删除");
+
+        // 关联表删除
+        groupRoleService.removeByRoleId(roleId);
+        roleResourceService.removeByRoleId(roleId);
+
+        // 自身删除
+        this.removeById(roleId);
     }
 
 }

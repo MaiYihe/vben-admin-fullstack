@@ -154,12 +154,6 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
 
     @Override
     public void createUser(UserCreateRequest userCreateRequest) {
-        if (userCreateRequest == null)
-            throw new BizException(40000, "创建请求为空");
-
-        if (userCreateRequest.getUsername() == null)
-            throw new BizException(40000, "创建请求中没有用户名");
-
         if (existUser(userCreateRequest.getUsername()))
             throw new BizException(40901, "用户已存在");
 
@@ -206,10 +200,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         userDepartmentService.removeByUserId(userId);
         userGroupService.removeByUserId(userId);
 
-        boolean removed = this.removeById(userId);
-
-        if (!removed)
-            throw new BizException(50001, "删除用户失败，未知错误");
+        this.removeById(userId);
     }
 
 }

@@ -2,6 +2,7 @@ package com.vbenadmin.backend.rbac.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -36,4 +37,7 @@ public interface RoleResourceMapper extends BaseMapper<RoleResource> {
     int insertByRoleIdAndResourceIds(
             @Param("roleId") String roleId,
             @Param("resourceIds") List<String> resourceIds);
+
+    @Delete("DELETE FROM sys_role_resource WHERE role_id = #{roleId}")
+    int deleteByRoleId(@Param("roleId") String roleId);
 }

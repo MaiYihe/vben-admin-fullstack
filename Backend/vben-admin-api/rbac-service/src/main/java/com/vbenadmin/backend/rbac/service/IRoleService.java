@@ -26,4 +26,6 @@ public interface IRoleService extends IService<Role> {
     void createRole(RoleCreateRequest request);
 
     void updateRole(String roleId, RoleUpdateRequest request);
+
+    void deleteRole(String roleId);
 }
