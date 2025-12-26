@@ -7,6 +7,7 @@ import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.rbac.entity.Role;
 import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
+import com.vbenadmin.backend.rbac.models.request.RoleUpdateRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 
 /**
@@ -19,8 +20,10 @@ import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
  */
 public interface IRoleService extends IService<Role> {
     PageResponseVO<RoleInfoVO> getRoleListByRequest(RoleQueryRequest request);
-    
+
     List<RoleInfoVO> getAllRoleList();
 
     void createRole(RoleCreateRequest request);
+
+    void updateRole(String roleId, RoleUpdateRequest request);
 }

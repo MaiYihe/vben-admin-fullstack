@@ -14,5 +14,7 @@ import com.vbenadmin.backend.rbac.entity.RoleResource;
  * @since 2025-12-08
  */
 public interface IRoleResourceService extends IService<RoleResource> {
-    void bindByAuthCodes(String roleId,List<String> authCodes);
+    boolean bindByAuthCodes(String roleId,List<String> authCodes);
+
+    boolean updateByAuthCodes(String roleId,List<String> authCodes);
 }

@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,7 @@ import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
+import com.vbenadmin.backend.rbac.models.request.RoleUpdateRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 import com.vbenadmin.backend.rbac.service.IRoleService;
 
@@ -49,5 +52,11 @@ public class RoleController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> updateRole(@PathVariable("id") String id,
+            @Valid @RequestBody RoleUpdateRequest request) {
+        roleService.updateRole(id, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 
 }

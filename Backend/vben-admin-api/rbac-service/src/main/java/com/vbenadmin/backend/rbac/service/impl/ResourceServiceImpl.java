@@ -1,5 +1,7 @@
 package com.vbenadmin.backend.rbac.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,4 +22,17 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> implements IResourceService {
+
+    @Override
+    public List<String> getIdsByAuthCodes(List<String> authCodes) {
+        if(authCodes == null || authCodes.isEmpty())
+            return List.of();
+
+        return this.lambdaQuery()
+            .in(Resource::getAuthCode, authCodes)
+            .list()
+            .stream()
+            .map(Resource::getId)
+            .toList();
+    }
 }

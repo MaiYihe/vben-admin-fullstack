@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
@@ -21,11 +23,13 @@ import com.vbenadmin.backend.rbac.mapper.RoleMapper;
 import com.vbenadmin.backend.rbac.models.dto.RolePermissionDTO;
 import com.vbenadmin.backend.rbac.models.request.RoleCreateRequest;
 import com.vbenadmin.backend.rbac.models.request.RoleQueryRequest;
+import com.vbenadmin.backend.rbac.models.request.RoleUpdateRequest;
 import com.vbenadmin.backend.rbac.models.vo.RoleInfoVO;
 import com.vbenadmin.backend.rbac.service.IRoleResourceService;
 import com.vbenadmin.backend.rbac.service.IRoleService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>
@@ -35,6 +39,7 @@ import lombok.RequiredArgsConstructor;
  * @author maihehe
  * @since 2025-12-08
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
@@ -121,6 +126,34 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         return this.lambdaQuery()
                 .eq(Role::getName, roleName)
                 .count() > 0;
+    }
+
+    @Override
+    @Transactional
+    public void updateRole(String roleId, RoleUpdateRequest request) {
+        if (roleId == null)
+            throw new BizException(40000, "roleId 为空，无法更新");
+
+        Role role = this.getById(roleId);
+        if (role == null)
+            throw new BizException(40401, "角色不存在");
+
+        log.debug("尝试更新 roleId 为 {} 的用户", roleId);
+        // update sys_role
+        LambdaUpdateWrapper<Role> rw = Wrappers.lambdaUpdate(Role.class)
+                .eq(Role::getId, roleId)
+                .set(request.getName() != null, Role::getName, request.getName())
+                .set(request.getStatus() != null, Role::getStatus, request.getStatus())
+                .set(request.getRemark() != null, Role::getRemark, request.getRemark());
+
+        boolean roleUpdated = this.update(rw);
+
+        // update sys_role_resource
+        boolean roleResourceUpdated = roleResourceService.updateByAuthCodes(roleId, request.getPermissions());
+
+        if (!roleUpdated && !roleResourceUpdated)
+            throw new BizException(50001, "角色信息更新失败，数据没有发生变化");
+
     }
 
 }

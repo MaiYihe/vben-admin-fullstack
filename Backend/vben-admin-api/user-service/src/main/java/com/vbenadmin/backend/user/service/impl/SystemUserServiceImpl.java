@@ -149,7 +149,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
 
         boolean updated = this.update(uw);
         if (!updated)
-            throw new BizException(50001, "用户信息更新失败");
+            throw new BizException(50001, "用户信息更新失败，数据没有发生变化");
     }
 
     @Override
