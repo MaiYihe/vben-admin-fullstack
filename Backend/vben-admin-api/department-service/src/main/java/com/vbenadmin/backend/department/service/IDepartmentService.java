@@ -8,4 +8,6 @@ import com.vbenadmin.backend.department.models.request.DeptCreateRequest;
 import com.vbenadmin.backend.department.models.vo.DeptInfoVO;
 
 public interface IDepartmentService extends IService<Department> {
+
+    List<DeptInfoVO> getAllDeptList();
 }

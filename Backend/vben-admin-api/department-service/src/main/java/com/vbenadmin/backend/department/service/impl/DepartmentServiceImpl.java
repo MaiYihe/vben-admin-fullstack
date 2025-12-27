@@ -19,4 +19,15 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
+
+    private final DeptInfoConverter deptInfoConverter;
+
+    @Override
+    public List<DeptInfoVO> getAllDeptList() {
+        List<Department> depts = this.list();
+        if (depts.isEmpty()) {
+            return List.of();
+        }
+        return deptInfoConverter.toVOList(depts);
+    }
 }

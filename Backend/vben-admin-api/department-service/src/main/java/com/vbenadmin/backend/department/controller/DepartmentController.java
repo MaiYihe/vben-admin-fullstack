@@ -21,4 +21,12 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/system/dept")
 @AllArgsConstructor
 public class DepartmentController {
+
+    private final IDepartmentService departmentService;
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<DeptInfoVO>>> getAllDeptList() {
+        List<DeptInfoVO> voList = departmentService.getAllDeptList();
+        return ResponseEntity.ok(ApiResponse.success(voList));
+    }
 }
