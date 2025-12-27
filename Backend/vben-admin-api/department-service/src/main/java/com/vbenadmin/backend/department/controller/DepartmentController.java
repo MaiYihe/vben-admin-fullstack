@@ -31,7 +31,7 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createDept(@Valid @RequestBody DeptCreateRequest request){
+    public ResponseEntity<ApiResponse<Void>> createDept(@Valid @RequestBody DeptCreateRequest request) {
         departmentService.createDeptByRequest(request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
