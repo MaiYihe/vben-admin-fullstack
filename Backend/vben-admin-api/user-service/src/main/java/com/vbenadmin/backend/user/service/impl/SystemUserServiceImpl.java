@@ -164,10 +164,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(defaultPassword));
 
-        boolean saved = this.save(user);
-
-        if (!saved)
-            throw new BizException(50001, "创建失败，未知错误");
+        this.save(user);
     }
 
     private boolean existUser(String username) {
