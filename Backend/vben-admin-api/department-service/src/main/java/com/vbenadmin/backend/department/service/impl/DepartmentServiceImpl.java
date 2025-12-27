@@ -3,6 +3,7 @@ package com.vbenadmin.backend.department.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
@@ -14,15 +15,19 @@ import com.vbenadmin.backend.department.models.request.DeptCreateRequest;
 import com.vbenadmin.backend.department.models.request.DeptUpdateRequest;
 import com.vbenadmin.backend.department.models.vo.DeptInfoVO;
 import com.vbenadmin.backend.department.service.IDepartmentService;
+import com.vbenadmin.backend.department.service.IUserDepartmentService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
 
     private final DeptInfoConverter deptInfoConverter;
     private final DeptConverter deptConverter;
+    private final IUserDepartmentService userDeptService;
 
     @Override
     public List<DeptInfoVO> getAllDeptList() {
@@ -42,10 +47,11 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         this.save(dept);
     }
 
-    private boolean existDept(String DeptName){
+    private boolean existDept(String DeptName) {
         return this.lambdaQuery()
-            .eq(Department::getName,DeptName)
-            .count() > 0;
+                .eq(Department::getName, DeptName)
+                .count() > 0;
+    }
 
     @Override
     public void updateDeptByRequest(String deptId, DeptUpdateRequest request) {
@@ -62,5 +68,16 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
                 .set(request.getRemark() != null, Department::getRemark, request.getRemark())
                 .update();
     }
+
+    @Override
+    @Transactional
+    public void deleteDeptById(String id) {
+
+        Department dept = this.getById(id);
+        if (dept == null)
+            throw new BizException(40401, "部门不存在");
+        userDeptService.removeByDeptId(id);
+
+        this.removeById(id);
     }
 }

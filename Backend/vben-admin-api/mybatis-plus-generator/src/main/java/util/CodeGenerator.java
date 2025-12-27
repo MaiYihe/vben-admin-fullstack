@@ -44,7 +44,7 @@ public class CodeGenerator{
                                 .xml("mapper.xml")
                 )
                 .strategyConfig(builder ->
-                                builder.addInclude("sys_department") // 设置需要生成的表名 "ms_article" "ms_tag"
+                                builder.addInclude("sys_user_department") // 设置需要生成的表名 "ms_article" "ms_tag"
                                         .addTablePrefix("sys_") // 设置过滤表前缀
                                         .entityBuilder().enableLombok()
 //                                .entityBuilder().enableLombok().enableFileOverride() // 开启文件覆盖 ，开启 Lombok
