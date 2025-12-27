@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
 
     private final DeptInfoConverter deptInfoConverter;
+    private final DeptConverter deptConverter;
 
     @Override
     public List<DeptInfoVO> getAllDeptList() {
@@ -29,5 +30,20 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             return List.of();
         }
         return deptInfoConverter.toVOList(depts);
+    }
+
+    @Override
+    public void createDeptByRequest(DeptCreateRequest request) {
+        if (existDept(request.getName()))
+            throw new BizException(40901, "部门已存在");
+
+        Department dept = deptConverter.toEntity(request);
+        this.save(dept);
+    }
+
+    private boolean existDept(String DeptName){
+        return this.lambdaQuery()
+            .eq(Department::getName,DeptName)
+            .count() > 0;
     }
 }

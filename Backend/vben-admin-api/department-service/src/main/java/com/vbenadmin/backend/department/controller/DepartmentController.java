@@ -29,4 +29,10 @@ public class DepartmentController {
         List<DeptInfoVO> voList = departmentService.getAllDeptList();
         return ResponseEntity.ok(ApiResponse.success(voList));
     }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createDept(@Valid @RequestBody DeptCreateRequest request){
+        departmentService.createDeptByRequest(request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }
