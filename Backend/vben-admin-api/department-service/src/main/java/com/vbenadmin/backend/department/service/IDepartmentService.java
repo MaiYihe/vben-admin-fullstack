@@ -15,4 +15,6 @@ public interface IDepartmentService extends IService<Department> {
     void createDeptByRequest(DeptCreateRequest request);
 
     void updateDeptByRequest(String id, DeptUpdateRequest request);
+
+    void deleteDeptById(String id);
 }

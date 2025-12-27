@@ -3,6 +3,7 @@ package com.vbenadmin.backend.department.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,11 +19,11 @@ import com.vbenadmin.backend.department.models.vo.DeptInfoVO;
 import com.vbenadmin.backend.department.service.IDepartmentService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/system/dept")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DepartmentController {
 
     private final IDepartmentService departmentService;
@@ -43,6 +44,12 @@ public class DepartmentController {
     public ResponseEntity<ApiResponse<Void>> updateDept(@PathVariable String id,
             @Valid @RequestBody DeptUpdateRequest request) {
         departmentService.updateDeptByRequest(id, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteDept(@PathVariable String id){
+        departmentService.deleteDeptById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
