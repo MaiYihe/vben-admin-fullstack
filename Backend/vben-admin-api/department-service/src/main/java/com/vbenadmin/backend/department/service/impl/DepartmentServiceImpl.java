@@ -11,6 +11,7 @@ import com.vbenadmin.backend.department.converter.DeptInfoConverter;
 import com.vbenadmin.backend.department.entity.Department;
 import com.vbenadmin.backend.department.mapper.DepartmentMapper;
 import com.vbenadmin.backend.department.models.request.DeptCreateRequest;
+import com.vbenadmin.backend.department.models.request.DeptUpdateRequest;
 import com.vbenadmin.backend.department.models.vo.DeptInfoVO;
 import com.vbenadmin.backend.department.service.IDepartmentService;
 
@@ -45,5 +46,21 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         return this.lambdaQuery()
             .eq(Department::getName,DeptName)
             .count() > 0;
+
+    @Override
+    public void updateDeptByRequest(String deptId, DeptUpdateRequest request) {
+        Department dept = this.getById(deptId);
+        if (dept == null)
+            throw new BizException(40000, "部门不存在");
+
+        log.debug("尝试更新 deptId 为 {} 的用户", deptId);
+        this.lambdaUpdate()
+                .eq(Department::getId, deptId)
+                .set(request.getName() != null, Department::getName, request.getName())
+                .set(request.getPid() != null, Department::getPid, request.getPid())
+                .set(request.getStatus() != null, Department::getStatus, request.getStatus())
+                .set(request.getRemark() != null, Department::getRemark, request.getRemark())
+                .update();
+    }
     }
 }
