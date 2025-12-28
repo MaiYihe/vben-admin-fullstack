@@ -31,6 +31,7 @@ pnpm run dev
 - Redis 维护登陆状态： (jti, userId)
     - JWT 机制允许多端登陆
 - mysql 本地数据库存储
+- Mybatis-plus 增强 ORM 框架
 - mybatis-plus-generator 代码生成器
 
 - common-core/common-web/common-rpc/common-infra 公告依赖模块
@@ -73,7 +74,28 @@ pnpm run dev
 据 VbenAdmin （他人开源前端）进行设计适配
 - 自定义并根据创建/修改表单（FormSchema），设计 createRequest
 - 自定义并根据查询条件（GridFormSchema），设计 queryRequest
-- 自定义并根据显示表格（GridSchema），设计 vo
+- 自定义并根据显示表格（ColumnSchema），设计列表页 vo
+
+#### 业务哲学
+列表页快速加载，详情页（表单、或称编辑页）完整加载，两者查询 api 分离（`/xxList` 和 `/xxDetail`）
+
+
+##### 增删改查要点总结
+整体查 GET（queryRequest）
+- 分页查询
+- 带条件查询（表里自带的条件，其他表关联过来的条件）
+
+具体查 GET（@PathVariable id）
+
+增 POST（@RequestBody createRequest）
+- 先查判断是否存在 + 带条件增（表里自带的条件/其他表关联过来的条件）
+
+改 PUT（@PathVariable id,@RequstBody updateRequest）
+- 先查判断是否存在 + 带条件改（表里自带的条件/其他表关联过来的条件）
+
+删 DELETE（@PathVariable id）
+- 不删除超级管理员与 status =1 （已启用）的
+- 删除关联表，再删除自身
 
 
 ## sql 表
