@@ -2,7 +2,10 @@ package com.vbenadmin.backend.user.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.entity.Group;
+import com.vbenadmin.backend.user.models.request.GroupQueryRequest;
+import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.vbenadmin.backend.user.entity.Group;
  * @since 2025-12-17
  */
 public interface IGroupService extends IService<Group> {
+    PageResponseVO<GroupInfoVO> getGroupListByRequest(GroupQueryRequest request);
 }

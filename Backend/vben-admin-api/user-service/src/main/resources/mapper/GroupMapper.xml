@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vbenadmin.backend.user.mapper.GroupMapper">
+    <select id="selectGroupIdsByRoles" resultType="java.lang.String">
+        SELECT gr.id 
+        FROM sys_group_role gr 
+        JOIN sys_role r ON gr.role_id = r.id 
+        WHERE r.name IN 
+        <foreach collection="roles" 
+            item="role"
+            open="(" separator="," close=")">
+            #{role}
+        </foreach>
+    </select>
+
+    <select id="selectGroupRolesByGroupIds" resultType="com.vbenadmin.backend.user.models.dto.GroupRoleDTO">
+        SELECT 
+            g.id AS groupId,
+            r.name AS role
+        FROM sys_group g 
+        JOIN sys_group_role gr ON g.id = gr.group_id 
+        JOIN sys_role r ON gr.role_id = r.id 
+        WHERE g.id IN 
+        <foreach collection="groupIds"
+            item="groupId"
+            open="(" separator="," close=")">
+            #{groupId}
+        </foreach>
+    </select>
+
+    <select id="countUsersByGroupIds" resultType="com.vbenadmin.backend.user.models.dto.GroupUserCountDTO">
+        SELECT 
+            g.id AS groupId,
+            COUNT(*) AS userCount
+        FROM sys_group g 
+        JOIN sys_user_group ug ON g.id = ug.group_id 
+        WHERE g.id IN 
+        <foreach collection="groupIds"
+            item="groupId"
+            open="(" separator="," close=")">
+            #{groupId}
+        </foreach>
+        GROUP BY g.id
+    </select>
+</mapper>

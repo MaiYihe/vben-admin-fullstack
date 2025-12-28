@@ -147,9 +147,7 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
                 .set(request.getStatus() != null, User::getStatus, request.getStatus())
                 .set(request.getRemark() != null, User::getDescription, request.getRemark());
 
-        boolean updated = this.update(uw);
-        if (!updated)
-            throw new BizException(50001, "用户信息更新失败，数据没有发生变化");
+        this.update(uw);
     }
 
     @Override
@@ -176,15 +174,13 @@ public class SystemUserServiceImpl extends ServiceImpl<UserMapper, User> impleme
     @Override
     @Transactional
     public void deleteUser(String userId) {
-        if (userId == null)
-            throw new BizException(40000, "未携带 userId");
 
         User user = this.getById(userId);
         if (user == null)
             throw new BizException(40401, "用户不存在");
 
         // 安全保护 1：禁止删超级管理员
-        if (user.getUsername() == "root") {
+        if (user.getUsername().equals("root")) {
             throw new BizException(40000, "不能删除超级管理员");
         }
 
