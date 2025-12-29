@@ -2,6 +2,7 @@ package com.vbenadmin.backend.user.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,5 +36,10 @@ public class GroupController {
         PageResponseVO<GroupInfoVO> pageVO = groupService.getGroupListByRequest(request);
         return ResponseEntity.ok(ApiResponse.success(pageVO));
     }
-    
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<GroupInfoVO>> getGroupDetail(@PathVariable("id") String id){
+        GroupInfoVO vo = groupService.getGroupDetailById(id);
+        return ResponseEntity.ok(ApiResponse.success(vo));
+    }
 }

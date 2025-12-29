@@ -64,30 +64,42 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         }
 
         List<String> groupIds = groups.stream()
-            .map(Group::getId)
-            .toList();
+                .map(Group::getId)
+                .toList();
 
         // mapstruct(List<Group> -> List<GroupInfoVO>)
         GroupRelationContext ctx = getGroupRelationContext(groupIds);
-        List<GroupInfoVO> groupInfoVOs = groupInfoVOConverter.toVOList(groups,ctx);
+        List<GroupInfoVO> groupInfoVOs = groupInfoVOConverter.toVOList(groups, ctx);
 
         return new PageResponseVO<GroupInfoVO>(groupInfoVOs, groupPage.getTotal());
     }
 
-    private GroupRelationContext getGroupRelationContext(List<String> groupIds){
+    private GroupRelationContext getGroupRelationContext(List<String> groupIds) {
         // get role
         List<GroupRoleDTO> groupRoleRows = groupMapper.selectGroupRolesByGroupIds(groupIds);
-        Map<String,List<String>> roleMap = groupRoleRows.stream()
-            .collect(Collectors.groupingBy(GroupRoleDTO::getGroupId,
+        Map<String, List<String>> roleMap = groupRoleRows.stream()
+                .collect(Collectors.groupingBy(GroupRoleDTO::getGroupId,
                         Collectors.mapping(GroupRoleDTO::getRole, Collectors.toList())));
 
         // get user count
         List<GroupUserCountDTO> groupUsersRows = groupMapper.countUsersByGroupIds(groupIds);
-        Map<String,Integer> userCountMap = new HashMap<>();
-        for(int i=0;i<groupIds.size();i++){
+        Map<String, Integer> userCountMap = new HashMap<>();
+        for (int i = 0; i < groupIds.size(); i++) {
             userCountMap.put(groupUsersRows.get(i).getGroupId(), groupUsersRows.get(i).getUserCount());
         }
-        
+
         return new GroupRelationContext(roleMap, userCountMap);
+    }
+
+    @Override
+    public GroupInfoVO getGroupDetailById(String id) {
+        Group group = this.getById(id);
+        List<String> roles = groupMapper.getRolesByGroupId(id);
+        Integer userCount = groupMapper.countUsersByGroupId(id);
+
+        GroupInfoVO groupInfoVO = groupInfoVOConverter.toVO(group);
+        groupInfoVO.setRoles(roles);
+        groupInfoVO.setUserCount(userCount);
+        return groupInfoVO;
     }
 }

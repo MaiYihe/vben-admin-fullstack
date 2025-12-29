@@ -3,6 +3,7 @@ package com.vbenadmin.backend.user.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vbenadmin.backend.user.entity.Group;
@@ -24,5 +25,20 @@ public interface GroupMapper extends BaseMapper<Group> {
     List<GroupRoleDTO> selectGroupRolesByGroupIds(List<String> groupIds);
 
     List<GroupUserCountDTO> countUsersByGroupIds(List<String> groupIds);
+
+    @Select("""
+        SELECT r.name
+        FROM sys_role r
+        JOIN sys_group_role gr ON r.id = gr.role_id
+        WHERE gr.group_id = #{id}
+    """)
+    List<String> getRolesByGroupId(@Param("id") String id);
+
+    @Select("""
+        SELECT COUNT(*)
+        FROM sys_user_group 
+        WHERE group_id = #{id}
+    """)
+    Integer countUsersByGroupId(@Param("id") String id);
 }
 

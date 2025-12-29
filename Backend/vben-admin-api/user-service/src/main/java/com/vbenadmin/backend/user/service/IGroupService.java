@@ -17,4 +17,6 @@ import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
  */
 public interface IGroupService extends IService<Group> {
     PageResponseVO<GroupInfoVO> getGroupListByRequest(GroupQueryRequest request);
+
+    GroupInfoVO getGroupDetailById(String id);
 }
