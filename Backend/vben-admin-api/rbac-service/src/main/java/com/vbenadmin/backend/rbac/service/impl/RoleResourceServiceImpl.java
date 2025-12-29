@@ -1,5 +1,12 @@
 package com.vbenadmin.backend.rbac.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.rbac.entity.RoleResource;
@@ -8,14 +15,6 @@ import com.vbenadmin.backend.rbac.service.IResourceService;
 import com.vbenadmin.backend.rbac.service.IRoleResourceService;
 
 import lombok.AllArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -44,7 +43,6 @@ public class RoleResourceServiceImpl extends ServiceImpl<RoleResourceMapper, Rol
     }
 
     @Override
-    @Transactional
     public boolean updateByAuthCodes(String roleId, List<String> authCodes) {
         if (roleId == null || authCodes == null)
             throw new BizException(40000, "参数错误");

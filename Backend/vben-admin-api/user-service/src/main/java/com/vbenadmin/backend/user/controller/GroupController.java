@@ -3,12 +3,14 @@ package com.vbenadmin.backend.user.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
+import com.vbenadmin.backend.user.models.request.GroupCreateRequest;
 import com.vbenadmin.backend.user.models.request.GroupQueryRequest;
 import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
 import com.vbenadmin.backend.user.service.IGroupService;
@@ -41,5 +43,11 @@ public class GroupController {
     public ResponseEntity<ApiResponse<GroupInfoVO>> getGroupDetail(@PathVariable("id") String id){
         GroupInfoVO vo = groupService.getGroupDetailById(id);
         return ResponseEntity.ok(ApiResponse.success(vo));
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createGroup(@RequestBody GroupCreateRequest request){
+        groupService.createGroup(request);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

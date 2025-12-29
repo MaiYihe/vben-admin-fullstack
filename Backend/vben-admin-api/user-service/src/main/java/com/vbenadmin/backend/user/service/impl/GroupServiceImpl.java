@@ -6,22 +6,28 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.vbenadmin.backend.commoncore.exception.BizException;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
+import com.vbenadmin.backend.user.converter.GroupConverter;
 import com.vbenadmin.backend.user.converter.GroupInfoVOConverter;
 import com.vbenadmin.backend.user.converter.context.GroupRelationContext;
 import com.vbenadmin.backend.user.entity.Group;
 import com.vbenadmin.backend.user.mapper.GroupMapper;
 import com.vbenadmin.backend.user.models.dto.GroupRoleDTO;
 import com.vbenadmin.backend.user.models.dto.GroupUserCountDTO;
+import com.vbenadmin.backend.user.models.request.GroupCreateRequest;
 import com.vbenadmin.backend.user.models.request.GroupQueryRequest;
 import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
+import com.vbenadmin.backend.user.service.IGroupRoleService;
 import com.vbenadmin.backend.user.service.IGroupService;
+import com.vbenadmin.backend.user.service.IUserGroupService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +45,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
     private final GroupMapper groupMapper;
     private final GroupInfoVOConverter groupInfoVOConverter;
+    private final GroupConverter groupConverter;
+    private final IUserGroupService userGroupService;
+    private final IGroupRoleService groupRoleService;
 
     @Override
     public PageResponseVO<GroupInfoVO> getGroupListByRequest(GroupQueryRequest request) {
@@ -101,5 +110,29 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         groupInfoVO.setRoles(roles);
         groupInfoVO.setUserCount(userCount);
         return groupInfoVO;
+    }
+
+    @Override
+    @Transactional
+    public void createGroup(GroupCreateRequest request) {
+        if (existGroup(request.getCode()))
+            throw new BizException(40901, "用户组已存在，不能出现重复的编码");
+
+        List<String> roleIds = request.getRoleIds();
+        List<String> userIds = request.getUserIds();
+
+        Group group = groupConverter.toEntity(request);
+
+        this.save(group);
+        String groupId = group.getId();
+
+        groupRoleService.bindGroupWithRoles(groupId, roleIds);
+        userGroupService.bindGroupWithUsers(groupId, userIds);
+    }
+
+    private boolean existGroup(String groupCode) {
+        return this.lambdaQuery()
+                .eq(Group::getCode, groupCode)
+                .count() > 0;
     }
 }
