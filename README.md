@@ -20,7 +20,7 @@ pnpm run dev
 - 选择 `@vben/web-antd`
 
 
-## 后端（开发中）
+## 后端
 - 完整的微服务架构体系
 - JDK 17 + SpringBoot 3.x
 - Nacos 注册/配置中心
@@ -63,6 +63,7 @@ pnpm run dev
     - 资源节点业务的增删改查
 - department-service（基于 SpringMVC）
     - 部门业务的增删改查
+- 审计系统（在学了在学了...）
 
 > [!TIP] 项目使用 maven wrapper 构建与运行
 
@@ -92,10 +93,12 @@ pnpm run dev
 
 改 PUT（@PathVariable id,@RequstBody updateRequest）
 - 先查判断是否存在 + 带条件改（表里自带的条件/其他表关联过来的条件）
+- 当前状态改成 **明确给定的目标状态** 逻辑：获取目标状态并查询现状、集合化、差分、执行更新（即插入项或删除项）
 
 删 DELETE（@PathVariable id）
-- 不删除超级管理员与 status =1 （已启用）的
-- 删除关联表，再删除自身
+- 保有 status 状态（逻辑删除）与物理删除两种手段
+- 对于用户表 sys_user 不删除超级管理员与 status =1 （已启用）的记录
+- 物理删除情况下：删除关联表，再删除自身（可以使用 **领域事件** 思想，让日后新增表自行订阅删除）
 
 
 ## sql 表

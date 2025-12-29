@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,12 +25,14 @@ import com.vbenadmin.backend.user.models.dto.GroupRoleDTO;
 import com.vbenadmin.backend.user.models.dto.GroupUserCountDTO;
 import com.vbenadmin.backend.user.models.request.GroupCreateRequest;
 import com.vbenadmin.backend.user.models.request.GroupQueryRequest;
+import com.vbenadmin.backend.user.models.request.GroupUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
 import com.vbenadmin.backend.user.service.IGroupRoleService;
 import com.vbenadmin.backend.user.service.IGroupService;
 import com.vbenadmin.backend.user.service.IUserGroupService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>
@@ -39,6 +42,7 @@ import lombok.RequiredArgsConstructor;
  * @author maihehe
  * @since 2025-12-17
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
@@ -128,6 +132,34 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
         groupRoleService.bindGroupWithRoles(groupId, roleIds);
         userGroupService.bindGroupWithUsers(groupId, userIds);
+    }
+
+    @Override
+    @Transactional
+    public void updateGroup(String groupId, GroupUpdateRequest request) {
+        if (this.getById(groupId) == null)
+            throw new BizException(40401, "用户组不存在");
+
+        if (existGroup(request.getCode()))
+            throw new BizException(40000, "用户编码已存在");
+
+        log.debug("尝试更新 groupId 为 {} 的用户", groupId);
+
+        LambdaUpdateWrapper<Group> uw = Wrappers.lambdaUpdate(Group.class)
+                .eq(Group::getId, groupId)
+                .set(request.getName() != null, Group::getName, request.getName())
+                .set(request.getCode() != null, Group::getCode, request.getCode())
+                .set(request.getStatus() != null, Group::getStatus, request.getStatus())
+                .set(request.getRemark() != null, Group::getRemark, request.getRemark());
+
+        this.update(uw);
+
+        if (request.getRoleIds() != null)
+            groupRoleService.updateByRoleIds(groupId, request.getRoleIds());
+
+        if (request.getUserIds() != null)
+            userGroupService.updateByUserIds(groupId, request.getUserIds());
+
     }
 
     private boolean existGroup(String groupCode) {

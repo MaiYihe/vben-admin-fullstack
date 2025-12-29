@@ -17,4 +17,6 @@ public interface IGroupRoleService extends IService<GroupRole> {
 
     void bindGroupWithRoles(String groupId, List<String> roleIds);
 
+    void updateByRoleIds(String groupId, List<String> roleIds);
+
 }

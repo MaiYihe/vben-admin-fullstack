@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import com.vbenadmin.backend.commoncore.models.response.ApiResponse;
 import com.vbenadmin.backend.commonweb.models.vo.PageResponseVO;
 import com.vbenadmin.backend.user.models.request.GroupCreateRequest;
 import com.vbenadmin.backend.user.models.request.GroupQueryRequest;
+import com.vbenadmin.backend.user.models.request.GroupUpdateRequest;
 import com.vbenadmin.backend.user.models.vo.GroupInfoVO;
 import com.vbenadmin.backend.user.service.IGroupService;
 
@@ -30,24 +32,32 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/sys/group")
 @RequiredArgsConstructor
 public class GroupController {
-    
+
     private final IGroupService groupService;
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse<PageResponseVO<GroupInfoVO>>> getGroupList(@Valid @RequestBody GroupQueryRequest request){
+    public ResponseEntity<ApiResponse<PageResponseVO<GroupInfoVO>>> getGroupList(
+            @Valid @RequestBody GroupQueryRequest request) {
         PageResponseVO<GroupInfoVO> pageVO = groupService.getGroupListByRequest(request);
         return ResponseEntity.ok(ApiResponse.success(pageVO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<GroupInfoVO>> getGroupDetail(@PathVariable("id") String id){
+    public ResponseEntity<ApiResponse<GroupInfoVO>> getGroupDetail(@PathVariable("id") String id) {
         GroupInfoVO vo = groupService.getGroupDetailById(id);
         return ResponseEntity.ok(ApiResponse.success(vo));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createGroup(@RequestBody GroupCreateRequest request){
+    public ResponseEntity<ApiResponse<Void>> createGroup(@RequestBody GroupCreateRequest request) {
         groupService.createGroup(request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> updateGroup(@PathVariable("id") String id,
+            @RequestBody GroupUpdateRequest request) {
+        groupService.updateGroup(id, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
