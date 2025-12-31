@@ -1,6 +1,7 @@
 package com.vbenadmin.backend.user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,12 @@ public class GroupController {
     public ResponseEntity<ApiResponse<Void>> updateGroup(@PathVariable("id") String id,
             @RequestBody GroupUpdateRequest request) {
         groupService.updateGroup(id, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteGroup(@PathVariable("id") String id){
+        groupService.deleteGroupById(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

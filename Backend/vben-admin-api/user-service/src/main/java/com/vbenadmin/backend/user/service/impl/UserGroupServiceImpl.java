@@ -76,4 +76,11 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupMapper, UserGroup
         }
     }
 
+    @Override
+    public void removeByGroupId(String id) {
+        this.lambdaUpdate()
+            .eq(UserGroup::getGroupId,id)
+            .remove();
+    }
+
 }

@@ -8,4 +8,6 @@ public interface IUserGroupService {
     void bindGroupWithUsers(String groupId, List<String> userIds);
 
     void updateByUserIds(String groupId, List<String> userIds);
+
+    void removeByGroupId(String id);
 }

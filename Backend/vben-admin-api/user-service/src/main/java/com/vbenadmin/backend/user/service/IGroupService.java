@@ -24,4 +24,6 @@ public interface IGroupService extends IService<Group> {
     void createGroup(GroupCreateRequest request);
 
     void updateGroup(String groupId, GroupUpdateRequest request);
+
+    void deleteGroupById(String id);
 }

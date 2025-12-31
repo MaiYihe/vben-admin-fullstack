@@ -1,5 +1,7 @@
 package com.vbenadmin.backend.user.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class Group implements Serializable {
     /**
      * 组ID（UUID）
      */
+    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**

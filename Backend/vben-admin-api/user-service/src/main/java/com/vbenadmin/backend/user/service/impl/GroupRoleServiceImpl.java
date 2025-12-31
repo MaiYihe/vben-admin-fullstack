@@ -5,6 +5,8 @@ import com.vbenadmin.backend.user.entity.GroupRole;
 import com.vbenadmin.backend.user.mapper.GroupRoleMapper;
 import com.vbenadmin.backend.user.service.IGroupRoleService;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +65,13 @@ public class GroupRoleServiceImpl extends ServiceImpl<GroupRoleMapper, GroupRole
                 .toList();
             this.saveBatch(entities);
         }
+    }
+
+    @Override
+    public void removeByGroupId(@NotBlank String id) {
+        this.lambdaUpdate()
+            .eq(GroupRole::getGroupId, id)
+            .remove();
     }
 
 }

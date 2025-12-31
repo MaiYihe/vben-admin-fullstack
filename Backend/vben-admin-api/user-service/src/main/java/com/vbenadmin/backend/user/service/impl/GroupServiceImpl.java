@@ -31,6 +31,7 @@ import com.vbenadmin.backend.user.service.IGroupRoleService;
 import com.vbenadmin.backend.user.service.IGroupService;
 import com.vbenadmin.backend.user.service.IUserGroupService;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -166,5 +167,19 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return this.lambdaQuery()
                 .eq(Group::getCode, groupCode)
                 .count() > 0;
+    }
+
+    @Override
+    @Transactional
+    public void deleteGroupById(@NotBlank String id) {
+        if(this.getById(id) == null)
+            throw new BizException(40401, "用户组不存在");
+
+        // delete itself
+        this.removeById(id);
+
+        // delete related
+        userGroupService.removeByGroupId(id);
+        groupRoleService.removeByGroupId(id);
     }
 }
