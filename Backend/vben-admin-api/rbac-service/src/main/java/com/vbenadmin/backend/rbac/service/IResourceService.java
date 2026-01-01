@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vbenadmin.backend.rbac.entity.Resource;
+import com.vbenadmin.backend.rbac.models.vo.ResourceInfoVO;
 
 /**
  * <p>
@@ -15,4 +16,6 @@ import com.vbenadmin.backend.rbac.entity.Resource;
  */
 public interface IResourceService extends IService<Resource> {
     List<String> getIdsByAuthCodes(List<String> authCodes);
+
+    List<ResourceInfoVO> getAllResourceList();
 }

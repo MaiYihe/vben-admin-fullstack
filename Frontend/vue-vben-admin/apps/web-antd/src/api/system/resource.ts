@@ -93,9 +93,9 @@ export namespace SystemResourceApi {
 /**
  * 获取资源节点数据列表
  */
-async function getResourceList() {
+async function getAllResourceList() {
   return requestClient.get<Array<SystemResourceApi.SystemResource>>(
-    '/system/resource/list',
+    '/system/resource/all',
   );
 }
 
@@ -151,7 +151,7 @@ async function deleteResource(id: string) {
 export {
   createResource,
   deleteResource,
-  getResourceList,
+  getAllResourceList as getResourceList,
   isResourceNameExists,
   isResourcePathExists,
   updateResource,
