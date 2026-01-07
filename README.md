@@ -23,6 +23,8 @@ pnpm run dev
 ## 后端
 - 完整的微服务架构体系
 - JDK 17 + SpringBoot 3.x
+    - 使用 `record`、`interface default` 等 JDK 特性
+    - 使用 SpringBoot 3.x 的自动配置办法
 - Nacos 注册/配置中心
 - Dubbo RPC 内部通信
 - JWT_AuthToken + RefreshToken 的（双 Token）登录安全机制    
@@ -30,9 +32,10 @@ pnpm run dev
 - MapStruct 实现 POJO 等类的相互映射
 - Redis 维护登陆状态： (jti, userId)
     - JWT 机制允许多端登陆
+    - Redis 维护登陆状态，允许强制下线
 - mysql 本地数据库存储
 - Mybatis-plus 增强 ORM 框架
-- mybatis-plus-generator 代码生成器
+- mybatis-plus-generator 代码生成器（实体类开启使用 Lombok）
 
 - common-core/common-web/common-rpc/common-infra 公告依赖模块
     - common-core 放置通用类和工具；common-web 放置 HTTP 处理类和工具；common-rpc 放置 dubbo_rpc 类和工具；common-infra 放置 SpringMVC 的通用基础配置
@@ -82,7 +85,10 @@ pnpm run dev
 
 
 ##### 增删改查要点总结
-整体查 GET（queryRequest）
+读 = 查
+写 = 增删改
+
+大体查 GET（queryRequest）
 - 分页查询
 - 带条件查询（表里自带的条件，其他表关联过来的条件）
 
@@ -98,7 +104,7 @@ pnpm run dev
 删 DELETE（@PathVariable id）
 - 保有 status 状态（逻辑删除）与物理删除两种手段
 - 对于用户表 sys_user 不删除超级管理员与 status =1 （已启用）的记录
-- 物理删除情况下：删除关联表，再删除自身（可以使用 **领域事件** 思想，让日后新增表自行订阅删除）
+- 物理删除情况下：删除关联表，再删除自身（可以使用 **领域事件** 思想，让日后新增表自行订阅删除——非整体事件，存在数据未处理的风险）
 
 
 ## sql 表
