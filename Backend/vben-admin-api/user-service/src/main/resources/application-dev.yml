@@ -1,5 +1,6 @@
-# logging:
-#   level:
-#     org:
-#       mybatis: DEBUG
-#     org.springframework: DEBUG
+logging:
+  level:
+    org:
+      mybatis: DEBUG
+    org.springframework: DEBUG
+    com.vbenadmin.backend.user: DEBUG
